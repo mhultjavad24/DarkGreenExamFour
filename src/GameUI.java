@@ -6,7 +6,7 @@ public class GameUI extends JFrame {
     private JPanel mainPanel = new JPanel(new BorderLayout());
     private JPanel CatagoryPanel = new JPanel(new GridLayout(4, 1));
     private JLabel scoreLabel;
-    private Game game;
+    private Game game; //ny referens för att kunna itiera med game
 
 
     public GameUI() {
