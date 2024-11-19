@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 
 public class Game {
@@ -38,7 +39,7 @@ public class Game {
     }
 
     public void selectCategory(Category category) {
-        rounds[currentRoundIndex] = new Round(category);
+        rounds[currentRoundIndex] = new Round(category, new ArrayList<>()); //osäker
     }
 }
 
