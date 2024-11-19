@@ -65,5 +65,10 @@ public class GameUI extends JFrame {
     }
     private void handleCategorySelection(Category category) { // lägga till logiken för när kategorier väljs
     }
+    private void clearPanels() {
+        CatagoryPanel.removeAll(); //tar bort kompenenter fr panel
+        CatagoryPanel.revalidate(); //layout uppdatering
+        CatagoryPanel.repaint(); //ritar om panelen
+    }
 
 }
