@@ -6,6 +6,7 @@ public class GameUI extends JFrame {
     private JPanel mainPanel = new JPanel(new BorderLayout());
     private JPanel CatagoryPanel = new JPanel(new GridLayout(4, 1));
     private JLabel scoreLabel;
+    private Game game;
 
 
     public GameUI() {
@@ -63,12 +64,4 @@ public class GameUI extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
     }
-    private void handleCategorySelection(Category category) { // lägga till logiken för när kategorier väljs
-    }
-    private void clearPanels() {
-        CatagoryPanel.removeAll(); //tar bort kompenenter fr panel
-        CatagoryPanel.revalidate(); //layout uppdatering
-        CatagoryPanel.repaint(); //ritar om panelen
-    }
-
 }
