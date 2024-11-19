@@ -16,15 +16,15 @@ public class Main {
         Round round = new Round(category, List.of(questions));
         Game game = new Game(players, new Round[]{new Round(category, List.of(questions))}, properties);
 
-        List<Category> categories = getCategories();
-        System.out.println(categories.toString());
+        List<Category> categories2 = getCategories();
+        System.out.println(categories2.toString());
         List<Question> allQuestions = getAllQuestions();
         System.out.println(allQuestions.toString());
 
         List<Question> programmingQuestions = getQuestionsByCategory("Programming");
         System.out.println(programmingQuestions.toString());
-  
-          GameUI gameUI = new GameUI();
+
+        GameUI gameUI = new GameUI();
 
         List<Category> categories = new ArrayList<>();
         categories.add(new Category("Programming"));
@@ -33,11 +33,11 @@ public class Main {
         categories.add(c1);
 
         String[] answers = {"1939", "1940", "1941", "1942"};
-        Question question = new Question("When did second world war start?", c1, answers, 0);
+        Question question3 = new Question("When did second world war start?", c1, answers, 0);
 
 //        gameUI.renderCategorySelection(categories);
 //
-        gameUI.renderQuestion(question);
+        gameUI.renderQuestion(question3);
     }
 
     public static void main(String[] args) {
