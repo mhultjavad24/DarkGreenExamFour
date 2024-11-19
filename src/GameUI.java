@@ -63,5 +63,7 @@ public class GameUI extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
     }
+    private void handleCategorySelection(Category category) { // lägga till logiken för när kategorier väljs
+    }
 
 }
