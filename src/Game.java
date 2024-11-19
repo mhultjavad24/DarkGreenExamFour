@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 
 public class Game {
@@ -6,6 +7,8 @@ public class Game {
     protected int currentRoundIndex;
     protected int playerSelectsNextCategoryIndex;
     protected Properties properties;
+
+
 
     public Game(List<Player> players, Round[] rounds, Properties properties) {
         this.players = players;
@@ -26,6 +29,19 @@ public class Game {
     public boolean hasFinished() {
         return currentRoundIndex > properties.getRoundsPerGame();
     }
+
+    public Player getCurrentPlayer() {
+        return players.get(playerSelectsNextCategoryIndex);
+    }
+
+    public void switchPlayer() {
+        playerSelectsNextCategoryIndex = (playerSelectsNextCategoryIndex + 1) % players.size();
+    }
+
+    public void selectCategory(Category category) {
+        rounds[currentRoundIndex] = new Round(category, new ArrayList<>()); //osäker
+    }
 }
+
 
 

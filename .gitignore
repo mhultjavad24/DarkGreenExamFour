@@ -192,6 +192,7 @@ $RECYCLE.BIN/
 
 ### IntelliJ IDEA ###
 .idea
+.idea/misc.xml
 *.iws
 *.iml
 *.ipr
