@@ -7,6 +7,8 @@ public class Game {
     protected int playerSelectsNextCategoryIndex;
     protected Properties properties;
 
+
+
     public Game(List<Player> players, Round[] rounds, Properties properties) {
         this.players = players;
         this.rounds = rounds;
@@ -26,6 +28,19 @@ public class Game {
     public boolean hasFinished() {
         return currentRoundIndex > properties.getRoundsPerGame();
     }
+
+    public Player getCurrentPlayer() {
+        return players.get(playerSelectsNextCategoryIndex);
+    }
+
+    public void switchPlayer() {
+        playerSelectsNextCategoryIndex = (playerSelectsNextCategoryIndex + 1) % players.size();
+    }
+
+    public void selectCategory(Category category) {
+        rounds[currentRoundIndex] = new Round(category);
+    }
 }
+
 
 
