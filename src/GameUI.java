@@ -168,7 +168,7 @@ public class GameUI extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-     //   if (e.getActionCommand()== "programmering")
+     //   if (e.getActionCommand()== "programmering") fix
     }
 
 //    public void renderQuestion(Question question) {
