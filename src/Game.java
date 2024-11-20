@@ -41,6 +41,10 @@ public class Game {
     public void selectCategory(Category category) {
         rounds[currentRoundIndex] = new Round(category, new ArrayList<>()); //osäker
     }
+    public void AnswerCurrentQuestion(boolean answer) {
+        Round currentRound = getCurrentRound();
+        Player currentPlayer = getCurrentPlayer();
+    }
 }
 
 
