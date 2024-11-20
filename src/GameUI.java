@@ -1,13 +1,15 @@
 import javax.swing.*;
 import javax.swing.border.AbstractBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameUI extends JFrame {
+public class GameUI extends JFrame implements ActionListener {
 //    private JPanel mainPanel = new JPanel(new BorderLayout());
 //    private JPanel CatagoryPanel = new JPanel(new GridLayout(4, 1));
 //    private JLabel scoreLabel;
@@ -95,6 +97,7 @@ public class GameUI extends JFrame {
             categoryPanel.add(ChooseCatagory);
             for (Category category : categories) {
                 JButton button = new JButton(category.getName());
+                button.addActionListener(this);
                 categoryPanel.add(button);
             }
         } else {
@@ -145,8 +148,10 @@ public class GameUI extends JFrame {
         JLabel categoryLabel = new JLabel(question.getCategory().getName());
         categoryLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
+
         for (String answer : question.answers) {
             JButton button = new JButton(answer);
+            button.addActionListener(this);
             buttonPanel.add(button);
         }
 
@@ -159,6 +164,11 @@ public class GameUI extends JFrame {
         setVisible(true);
 
 
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        //if (e.getActionCommand()== "programmering") fix
     }
 
 //    public void renderQuestion(Question question) {
