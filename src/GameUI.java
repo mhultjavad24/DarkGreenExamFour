@@ -151,7 +151,7 @@ public class GameUI extends JFrame implements ActionListener {
 
         for (String answer : question.answers) {
             JButton button = new JButton(answer);
-            button.addActionListener(this);
+            button.addActionListener(this); // ny
             buttonPanel.add(button);
         }
 
