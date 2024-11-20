@@ -37,7 +37,7 @@ public class Main {
 
 //        gameUI.renderCategorySelection(categories);
 //
-        gameUI.renderQuestion(question3);
+      //  gameUI.renderQuestion(question3);
     }
 
     public static void main(String[] args) {
