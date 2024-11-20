@@ -151,7 +151,7 @@ public class GameUI extends JFrame implements ActionListener {
 
         for (String answer : question.answers) {
             JButton button = new JButton(answer);
-            button.addActionListener(this); // ny
+            button.addActionListener(this);
             buttonPanel.add(button);
         }
 
@@ -168,7 +168,7 @@ public class GameUI extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-     //   if (e.getActionCommand()== "programmering") fix
+        //if (e.getActionCommand()== "programmering") fix
     }
 
 //    public void renderQuestion(Question question) {
