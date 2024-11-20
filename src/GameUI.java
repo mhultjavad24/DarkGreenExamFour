@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameUI extends JFrame {
-    private JPanel mainPanel = new JPanel(new BorderLayout());
-    private JPanel CatagoryPanel = new JPanel(new GridLayout(4, 1));
-    private JLabel scoreLabel;
-    private Game game; //ny referens för att kunna itiera med game
+//    private JPanel mainPanel = new JPanel(new BorderLayout());
+//    private JPanel CatagoryPanel = new JPanel(new GridLayout(4, 1));
+//    private JLabel scoreLabel;
+//    private Game game; //ny referens för att kunna itiera med game
 
 
     public GameUI() {
@@ -34,18 +34,23 @@ public class GameUI extends JFrame {
     }
 
     public static void main(String[] args) {
-        GameUI gameUI = new GameUI();
 
+//        För att testa:
         List<Category> categories = new ArrayList<>();
         categories.add(new Category("Programming"));
         categories.add(new Category("Animals and Nature"));
         Category c1 = new Category("History");
         categories.add(c1);
 
-        gameUI.showLobbyPanel(categories);
+        String[] answers = {"1939", "1940", "1941", "1942"};
+        Question question3 = new Question("When did second world war start?", c1, answers, 0);
+
+        GameUI gameUI = new GameUI();
+//        gameUI.showLobbyPanel(categories, false);
+//        gameUI.showGamePanel(question3);
     }
 
-    public void showLobbyPanel(List<Category> categories) {
+    public void showLobbyPanel(List<Category> categories, boolean chooseCategory) {
 
         JPanel mainPanel = new JPanel(new BorderLayout());
         JPanel categoryPanel = new JPanel(new GridLayout(4, 1));
@@ -59,6 +64,9 @@ public class GameUI extends JFrame {
         playerOneLabel.setHorizontalAlignment(SwingConstants.CENTER);
         JLabel playerTwoLabel = new JLabel("Player 2");
         playerTwoLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+        JLabel waitingLabel = new JLabel("Waiting for opponent...");
+        waitingLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         java.util.Properties properties = new java.util.Properties();
         int roundsPerGame = 0;
@@ -77,16 +85,20 @@ public class GameUI extends JFrame {
         scorePanelPlayerTwo = createScorePanel(roundsPerGame, questionsPerRound,Color.GRAY);
         scorePanelPlayerTwo.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-
         setTitle("DarkGreen Quiz");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(500, 400);
         JLabel ChooseCatagory = new JLabel("Choose Catagory");
         ChooseCatagory.setHorizontalAlignment(SwingConstants.CENTER);
-        categoryPanel.add(ChooseCatagory);
-        for (Category category : categories) {
-            JButton button = new JButton(category.getName());
-            categoryPanel.add(button);
+
+        if (chooseCategory) {
+            categoryPanel.add(ChooseCatagory);
+            for (Category category : categories) {
+                JButton button = new JButton(category.getName());
+                categoryPanel.add(button);
+            }
+        } else {
+            categoryPanel.add(waitingLabel);
         }
 
         northPanel.add(playerOneLabel);
@@ -104,7 +116,6 @@ public class GameUI extends JFrame {
         setVisible(true);
     }
 
-
     private JPanel createScorePanel (int rows, int col, Color color){
         JPanel panel = new JPanel(new GridLayout(rows, col, 10, 10));
         panel.setBackground(Color.WHITE);
@@ -112,9 +123,6 @@ public class GameUI extends JFrame {
         for (int i = 0; i < rows * col; i++) {
             JPanel cell = new JPanel();
             cell.setBackground(color);
-            cell.setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createEmptyBorder(100, 10, 5, 10),
-                    BorderFactory.createLineBorder(color, 10)));
 
             panel.add(cell);
         }
@@ -122,20 +130,51 @@ public class GameUI extends JFrame {
     }
 
 
-    public void renderQuestion(Question question) {
+    public void showGamePanel (Question question) {
+
         setTitle("DarkGreen Quiz");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(800, 600);
-        JButton ChooseCatagory = new JButton(question.getText());
-        CatagoryPanel.add(ChooseCatagory);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setSize(500, 400);
+        setLocationRelativeTo(null);
+
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        JPanel buttonPanel = new JPanel(new GridLayout(2, 2));
+
+        JLabel questionLabel = new JLabel(question.getText());
+        questionLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        JLabel categoryLabel = new JLabel(question.getCategory().getName());
+        categoryLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         for (String answer : question.answers) {
             JButton button = new JButton(answer);
-            CatagoryPanel.add(button);
+            buttonPanel.add(button);
         }
-        mainPanel.add(CatagoryPanel, BorderLayout.CENTER);
+
         add(mainPanel);
-        setLocationRelativeTo(null);
+
+        mainPanel.add(questionLabel, BorderLayout.CENTER);
+        mainPanel.add(categoryLabel, BorderLayout.NORTH);
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+
         setVisible(true);
+
+
     }
+
+//    public void renderQuestion(Question question) {
+//        setTitle("DarkGreen Quiz");
+//        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        setSize(800, 600);
+//        JButton ChooseCatagory = new JButton(question.getText());
+//        CatagoryPanel.add(ChooseCatagory);
+//
+//        for (String answer : question.answers) {
+//            JButton button = new JButton(answer);
+//            CatagoryPanel.add(button);
+//        }
+//        mainPanel.add(CatagoryPanel, BorderLayout.CENTER);
+//        add(mainPanel);
+//        setLocationRelativeTo(null);
+//        setVisible(true);
+//    }
 }
