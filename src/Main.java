@@ -24,7 +24,7 @@ public class Main {
         List<Question> programmingQuestions = getQuestionsByCategory("Programming");
         System.out.println(programmingQuestions.toString());
 
-        GameUI gameUI = new GameUI();
+        //GameUI gameUI = new GameUI();
 
         List<Category> categories = new ArrayList<>();
         categories.add(new Category("Programming"));

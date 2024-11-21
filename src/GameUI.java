@@ -8,31 +8,20 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class GameUI extends JFrame implements ActionListener {
 //    private JPanel mainPanel = new JPanel(new BorderLayout());
 //    private JPanel CatagoryPanel = new JPanel(new GridLayout(4, 1));
 //    private JLabel scoreLabel;
 //    private Game game; //ny referens för att kunna itiera med game
+    private List<Category> categories;
+    private List<Question> questions;
 
 
-    public GameUI() {
-//        setTitle("DarkGreen Quiz");
-//        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        setSize(800, 600);
-//        JButton Catagory1 = new JButton("Catagory 1");
-//        JButton Catagory2 = new JButton("Catagory 2");
-//        JButton Catagory3 = new JButton("Catagory 3");
-//        JButton ChooseCatagory = new JButton("Choose Catagory");
-//        CatagoryPanel.add(ChooseCatagory);
-//        CatagoryPanel.add(Catagory1);
-//        CatagoryPanel.add(Catagory2);
-//        CatagoryPanel.add(Catagory3);
-//        mainPanel.add(CatagoryPanel, BorderLayout.CENTER);
-//        add(mainPanel);
-//        setLocationRelativeTo(null);
-//        setVisible(true);
-
+    public GameUI(List<Category> categories, List<Question> questions) {
+        this.categories = categories;
+        this.questions = questions;
     }
 
     public static void main(String[] args) {
@@ -46,10 +35,12 @@ public class GameUI extends JFrame implements ActionListener {
 
         String[] answers = {"1939", "1940", "1941", "1942"};
         Question question3 = new Question("When did second world war start?", c1, answers, 0);
+        List <Question> questions = new ArrayList<>();
+        questions.add(question3);
 
-        GameUI gameUI = new GameUI();
+        GameUI gameUI = new GameUI(categories, questions);
 //        gameUI.showLobbyPanel(categories, false);
-//        gameUI.showGamePanel(question3);
+        gameUI.showGamePanel(question3);
     }
 
     public void showLobbyPanel(List<Category> categories, boolean chooseCategory) {
@@ -133,6 +124,9 @@ public class GameUI extends JFrame implements ActionListener {
     }
 
 
+    //Här kanske man behöver ha kategori som inparameter istället för frågan?
+    //Så att man sen kan iterera genom frågorna per kategori och inte behöver anropa
+    //showGamePanel för varje fråga. Tankar?
     public void showGamePanel (Question question) {
 
         setTitle("DarkGreen Quiz");
@@ -163,28 +157,26 @@ public class GameUI extends JFrame implements ActionListener {
 
         setVisible(true);
 
-
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        //if (e.getActionCommand()== "programmering") fix
-    }
 
-//    public void renderQuestion(Question question) {
-//        setTitle("DarkGreen Quiz");
-//        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        setSize(800, 600);
-//        JButton ChooseCatagory = new JButton(question.getText());
-//        CatagoryPanel.add(ChooseCatagory);
-//
-//        for (String answer : question.answers) {
-//            JButton button = new JButton(answer);
-//            CatagoryPanel.add(button);
-//        }
-//        mainPanel.add(CatagoryPanel, BorderLayout.CENTER);
-//        add(mainPanel);
-//        setLocationRelativeTo(null);
-//        setVisible(true);
-//    }
+        /*
+        To-do:
+        Kolla av vad för typ av knapp som tryckts på
+        Om kategori - Kolla vilken kategori som valts och gå vidare till GamePanel
+        Om svarsknapp - Kolla vilket svar som angivits, se om det var rätt
+        Ändra färg på knappen som tryckts på. Rött - fel. Grönt - rätt
+        Visa nästa fråga
+        Loop som avgör hur många frågor och rundor
+        Ändra färger på rutor i Lobbyn baserat på poäng för rundan
+        osv
+         */
+
+        if (e.getActionCommand().equalsIgnoreCase(questions.getFirst().toString())) {
+
+        }
+
+    }
 }
