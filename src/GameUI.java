@@ -8,10 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameUI extends JFrame implements ActionListener {
-//    private JPanel mainPanel = new JPanel(new BorderLayout());
-//    private JPanel CatagoryPanel = new JPanel(new GridLayout(4, 1));
-//    private JLabel scoreLabel;
-//    private Game game; //ny referens för att kunna itiera med game
     private List<Category> categories;
     private List<Question> questions;
     private JPanel lobbyPanel;
@@ -224,22 +220,6 @@ public class GameUI extends JFrame implements ActionListener {
 
         revalidate();
         repaint();
-
-//        for (Question question : questions) {
-//            for (int i = 0; i < question.answers.length; i++) {
-//                if (question.isCorrectAnswer(question.answers[i])) {
-//                    clickedButton.setBackground(Color.GREEN);
-//                } else {
-//                    clickedButton.setBackground(Color.RED);
-//                }
-//                revalidate();
-//                repaint();
-//            }
-//        }
-
-        if (e.getActionCommand().equalsIgnoreCase(questions.getFirst().toString())) {
-
-        }
 
     }
 }
