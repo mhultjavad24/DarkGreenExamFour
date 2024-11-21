@@ -18,4 +18,28 @@ public class Round {
     public Question getQuestion() {
         return questions[currentQuestionIndex];
     }
+
+
+    public boolean nextQuestion() {
+        if (currentQuestionIndex < questions.length - 1) {
+            currentQuestionIndex++;
+            return true;
+        }
+        return false;
+    }
+
+    //Kontroll om rundan är klar/
+    public boolean isFinished() {
+        return currentQuestionIndex >= questions.length - 1;
+    }
+
+    public void setPlayerResult(int playerIndex, boolean isCorrect) {
+    }
 }
+
+    //if sats bör de va här inne?
+
+//   // public int getPlayerScore(int playerIndex) { //osäker kring denna , need help
+
+
+
