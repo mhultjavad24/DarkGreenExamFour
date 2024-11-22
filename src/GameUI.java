@@ -80,6 +80,7 @@ public class GameUI extends JFrame implements ActionListener {
                 waitingLabel.setHorizontalAlignment(SwingConstants.CENTER);
                 categoryPanel.add(waitingLabel);
             }
+            lobbyPanel.add(categoryPanel, BorderLayout.SOUTH); //la till kategoriknappspanelen
 
             java.util.Properties properties = new java.util.Properties();
             int roundsPerGame = 0;
