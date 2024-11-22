@@ -1,5 +1,4 @@
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Category implements Serializable {
@@ -11,6 +10,11 @@ public class Category implements Serializable {
         this.name = name;
     }
 
+    public Category(String name, List<Question> questions) {
+        this.name = name;
+        this.questions = questions;
+    }
+
     public String getName() {
         return name;
     }
@@ -19,7 +23,11 @@ public class Category implements Serializable {
         this.name = name;
     }
 
-    public List<Question> getQuestions() { return questions; }
+    public List<Question> getQuestions() {
+        return questions;
+    }
 
-    public void setQuestions(List<Question> questions) { this.questions = questions; }
+    public void setQuestions(List<Question> questions) {
+        this.questions = questions;
+    }
 }
