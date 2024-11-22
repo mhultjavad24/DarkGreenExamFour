@@ -1,33 +1,30 @@
 import java.io.Serializable;
+import java.util.List;
 
 public class Result implements Serializable {
-    private int player1Score;
-    private int player2Score;
+    private List<Integer> player1RoundScores;
+    private List<Integer> player2RoundScores;
 
-
-    public Result(int player1Score, int player2Score) {
-        this.player1Score = player1Score;
-        this.player2Score = player2Score;
+    public Result(List<Integer> player1RoundScores, List<Integer> player2RoundScores) {
+        this.player1RoundScores = player1RoundScores;
+        this.player2RoundScores = player2RoundScores;
     }
 
-
-    public int getPlayer1Score() {
-        return player1Score;
+    public List<Integer> getPlayer1RoundScores() {
+        return player1RoundScores;
     }
 
-    public void setPlayer1Score(int player1Score) {
-        this.player1Score = player1Score;
+    public void setPlayer1RoundScores(List<Integer> player1RoundScores) {
+        this.player1RoundScores = player1RoundScores;
     }
 
-    public int getPlayer2Score() {
-        return player2Score;
+    public List<Integer> getPlayer2RoundScores() {
+        return player2RoundScores;
     }
 
-    public void setPlayer2Score(int player2Score) {
-        this.player2Score = player2Score;
+    public void setPlayer2RoundScores(List<Integer> player2RoundScores) {
+        this.player2RoundScores = player2RoundScores;
     }
-
-
 }
 
 
