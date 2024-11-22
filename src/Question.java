@@ -1,4 +1,6 @@
-public class Question {
+import java.io.Serializable;
+
+public class Question implements Serializable {
     protected String text;
     protected Category category;
     protected String[] answers;

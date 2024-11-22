@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +14,7 @@ public class GameUI extends JFrame implements ActionListener {
     private JPanel lobbyPanel;
     private JPanel gamePanel;
     private Question currentQuestion;
+    private ObjectOutputStream out;
 
 
     public GameUI(List<Category> categories, List<Question> questions) {
@@ -36,7 +38,7 @@ public class GameUI extends JFrame implements ActionListener {
         historyQuestions.add(question3);
         c1.setQuestions(historyQuestions);
 
-        List <Question> questions = new ArrayList<>();
+        List<Question> questions = new ArrayList<>();
         questions.add(question3);
 
         GameUI gameUI = new GameUI(categories, questions);
@@ -57,7 +59,7 @@ public class GameUI extends JFrame implements ActionListener {
             JPanel categoryPanel = new JPanel(new GridLayout(4, 1));
             JPanel outerScorePanel = new JPanel(new GridLayout(1, 2));
             outerScorePanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-            JPanel northPanel = new JPanel(new GridLayout(1,2));
+            JPanel northPanel = new JPanel(new GridLayout(1, 2));
 
             JLabel playerOneLabel = new JLabel("Player 1");
             playerOneLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -93,9 +95,9 @@ public class GameUI extends JFrame implements ActionListener {
                 throw new RuntimeException(e);
             }
 
-            JPanel scorePanelPlayerOne = createScorePanel(roundsPerGame, questionsPerRound,Color.GRAY);
+            JPanel scorePanelPlayerOne = createScorePanel(roundsPerGame, questionsPerRound, Color.GRAY);
             scorePanelPlayerOne.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-            JPanel scorePanelPlayerTwo = createScorePanel(roundsPerGame, questionsPerRound,Color.GRAY);
+            JPanel scorePanelPlayerTwo = createScorePanel(roundsPerGame, questionsPerRound, Color.GRAY);
             scorePanelPlayerTwo.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
             northPanel.add(playerOneLabel);
@@ -120,7 +122,7 @@ public class GameUI extends JFrame implements ActionListener {
 
     }
 
-    private JPanel createScorePanel (int rows, int col, Color color){
+    private JPanel createScorePanel(int rows, int col, Color color) {
         JPanel panel = new JPanel(new GridLayout(rows, col, 10, 10));
         panel.setBackground(Color.WHITE);
 
@@ -137,8 +139,8 @@ public class GameUI extends JFrame implements ActionListener {
     //Här kanske man behöver ha kategori som inparameter istället för frågan?
     //Så att man sen kan iterera genom frågorna per kategori och inte behöver anropa
     //showGamePanel för varje fråga. Tankar?
-    public void showGamePanel (Question question) {
-
+    public void showGamePanel(Question question, ObjectOutputStream out) {
+        this.out = out;
         this.currentQuestion = question;
         setTitle("DarkGreen Quiz");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -197,12 +199,35 @@ public class GameUI extends JFrame implements ActionListener {
         osv
          */
 
+        if (this.out != null) {
+            // sdsd
+            List<Integer> p1RoundScore = new ArrayList<>();
+            List<Integer> p2RoundScore = new ArrayList<>();
+
+            p1RoundScore.add(1);
+            p1RoundScore.add(2);
+            p1RoundScore.add(3);
+
+            p2RoundScore.add(2);
+            p2RoundScore.add(1);
+            p2RoundScore.add(3);
+
+            Result r = new Result(p1RoundScore, p2RoundScore);
+            QuizResponse quizResponse1 = new QuizResponse(List.of(), r);
+            try {
+                this.out.writeObject(quizResponse1);
+            } catch (IOException e1) {
+                throw new RuntimeException(e1);
+            }
+        }
+
+
         JButton clickedButton = (JButton) e.getSource();
 
         for (Category category : categories) {
             if (category.getName().equals(e.getActionCommand())) {
                 List<Question> categorySpecificQuestions = category.getQuestions();
-                showGamePanel(categorySpecificQuestions.get(0));
+                showGamePanel(categorySpecificQuestions.get(0), null);
                 return;
             }
         }
