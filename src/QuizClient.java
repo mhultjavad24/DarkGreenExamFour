@@ -5,9 +5,15 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
-public class QuizClient {
+public class QuizClient { // denna klass bör uppdateras
+    private static String playerName;
+
     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter your name: ");
+        playerName = scanner.nextLine();
         try (Socket socket = new Socket("127.0.0.1", 55555);
              ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
              ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
