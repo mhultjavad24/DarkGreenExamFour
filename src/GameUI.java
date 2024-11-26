@@ -18,7 +18,7 @@ public class GameUI extends JFrame implements ActionListener {
     private Game game;
     private int roundsPerGame;
     private int questionsPerRound;
-    // private int questionAskedInCurrentRound = 0;
+    //private int questionAskedInCurrentRound = 0;
 
     // NY listor för att hålla referenser till rutorna
     private List<JPanel> scorePanelsPlayerOne = new ArrayList<>();

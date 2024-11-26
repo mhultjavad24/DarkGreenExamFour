@@ -26,7 +26,7 @@ public class QuizClient {
             out.writeObject(response);
 
             // En endaste instans av GameUi
-            GameUI gameUI = new GameUI(List.of(category), null); //Här behöver vi mata in fett mkt i konstruktorn
+            GameUI gameUI = new GameUI(List.of(category), null); //Här behöver vi mata in en del i konstruktorn
 
             // Visar lobbyn
             SwingUtilities.invokeLater(() -> {
