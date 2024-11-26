@@ -8,6 +8,16 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.List;
+
 public class GameUI extends JFrame implements ActionListener {
     private List<Category> categories;
     private List<Question> questions;
@@ -15,12 +25,19 @@ public class GameUI extends JFrame implements ActionListener {
     private JPanel gamePanel;
     private Question currentQuestion;
     private ObjectOutputStream out;
+    private Game game;
+
+    // NY - listor för att hålla referenser till rutorna
+    private List<JPanel> scorePanelsPlayerOne = new ArrayList<>();
+    private List<JPanel> scorePanelsPlayerTwo = new ArrayList<>();
 
 
     public GameUI(List<Category> categories, List<Question> questions) {
         this.categories = categories;
+        this.game = game; //koppla game till gameUI
         this.questions = questions;
     }
+
 
     public static void main(String[] args) {
 
@@ -95,9 +112,9 @@ public class GameUI extends JFrame implements ActionListener {
                 throw new RuntimeException(e);
             }
 
-            JPanel scorePanelPlayerOne = createScorePanel(roundsPerGame, questionsPerRound, Color.GRAY);
+            JPanel scorePanelPlayerOne = createScorePanel(roundsPerGame, questionsPerRound, Color.GRAY, scorePanelsPlayerOne);
             scorePanelPlayerOne.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-            JPanel scorePanelPlayerTwo = createScorePanel(roundsPerGame, questionsPerRound, Color.GRAY);
+            JPanel scorePanelPlayerTwo = createScorePanel(roundsPerGame, questionsPerRound, Color.GRAY, scorePanelsPlayerTwo);
             scorePanelPlayerTwo.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
             northPanel.add(playerOneLabel);
@@ -122,17 +139,25 @@ public class GameUI extends JFrame implements ActionListener {
 
     }
 
-    private JPanel createScorePanel(int rows, int col, Color color) {
+    private JPanel createScorePanel(int rows, int col, Color color, List<JPanel> scorePanels) {
         JPanel panel = new JPanel(new GridLayout(rows, col, 10, 10));
         panel.setBackground(Color.WHITE);
 
         for (int i = 0; i < rows * col; i++) {
             JPanel cell = new JPanel();
             cell.setBackground(color);
-
+            scorePanels.add(cell); // Sparar 1 referens till varje cell
             panel.add(cell);
         }
         return panel;
+    }
+    //för att uppdatera färg på poängtavlans rutor - ny metod
+    private void updateScorePanel(int player, int round, boolean isCorrect) {
+        List<JPanel> scorePanels = (player == 1) ? scorePanelsPlayerOne : scorePanelsPlayerTwo;
+        if (round >= 0 && round < scorePanels.size()) {
+            JPanel cell = scorePanels.get(round);
+            cell.setBackground(isCorrect ? Color.GREEN : Color.RED);
+        }
     }
 
 
@@ -192,7 +217,7 @@ public class GameUI extends JFrame implements ActionListener {
         Kolla av vad för typ av knapp som tryckts på
         Om kategori - Kolla vilken kategori som valts och gå vidare till GamePanel
         Om svarsknapp - Kolla vilket svar som angivits, se om det var rätt
-        Ändra färg på knappen som tryckts på. Rött - fel. Grönt - rätt
+        Ändra färg på knappen som tryckts på. Rött - fel. Grönt - rätt / done
         Visa nästa fråga
         Loop som avgör hur många frågor och rundor
         Ändra färger på rutor i Lobbyn baserat på poäng för rundan
@@ -232,17 +257,35 @@ public class GameUI extends JFrame implements ActionListener {
             }
         }
 
-        //Bakgrundsfärg ändras aldrig på min dator så jag
-        // har svårt att avgöra om det här fungerar eller inte /Melina
         if (currentQuestion != null) {
             String selectedAnswer = e.getActionCommand();
-            if (currentQuestion.isCorrectAnswer(selectedAnswer)) {
-                clickedButton.setBackground(Color.GREEN);
-            } else {
-                clickedButton.setBackground(Color.RED);
-            }
+            boolean isCorrect = currentQuestion.isCorrectAnswer(selectedAnswer); // Kontroll om svaret är rätt lr fel
+
+            clickedButton.setBackground(isCorrect ? Color.GREEN : Color.RED);
+            // Ändrar bakgrundsfärg på den knapp som användaren klickade på
+
+            // Uppdatera poängtavlan: Spelare 1, runda 0
+            updateScorePanel(1, 0, isCorrect); // Justera spelare och runda enligt logiken så de behöver nt va 0
+
+            // Skapar en timer med en anonym inre klass för att vänta och efter då återgå till lobbyn
+            Timer timer = new Timer(4000, new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent evt) {
+                    showLobbyPanel(true); // Visa lobbyn igen
+                }
+            });
+            timer.setRepeats(false); // Kör bara en gång
+            timer.start();
         }
 
+//            if (currentQuestion.isCorrectAnswer(selectedAnswer)) {
+//                clickedButton.setBackground(Color.GREEN);
+//            } else {
+//                clickedButton.setBackground(Color.RED);
+//            }
+//
+//        }
+//
         revalidate();
         repaint();
 
