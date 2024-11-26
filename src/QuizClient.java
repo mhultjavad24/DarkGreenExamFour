@@ -23,16 +23,16 @@ public class QuizClient {
             // detta är en kategori och skicka välkomstmeddelande
             Category category = new Category("Programming");
             QuizResponse response = new QuizResponse(QuizResponse.ResponseType.WELCOME, List.of(category), null);
-            out.writeObject(response);
-
-            // En endaste instans av GameUi
-            GameUI gameUI = new GameUI(List.of(category), null); //Här behöver vi mata in en del i konstruktorn
-
-            // Visar lobbyn
-            SwingUtilities.invokeLater(() -> {
-                gameUI.showLobbyPanel(true);
-                gameUI.setVisible(true);
-            });
+//            out.writeObject(response);
+//
+//            // En endaste instans av GameUi
+//            GameUI gameUI = new GameUI(List.of(category), null); //Här behöver vi mata in en del i konstruktorn
+//
+//            // Visar lobbyn
+//            SwingUtilities.invokeLater(() -> {
+//                gameUI.showLobbyPanel(true);
+//                gameUI.setVisible(true);
+//            });
 
             // Steg 4: Lyssna efter serverrespons
             Object inResponse;
@@ -45,7 +45,7 @@ public class QuizClient {
                         Question firstQuestion = c.getQuestions().get(0); // Hämtar första frågan
 
                         // Uppdatera befintlig GameUI-instans och visar frågan
-                        gameUI.showGamePanel(firstQuestion);
+//                        gameUI.showGamePanel(firstQuestion);
                     });
                 }
             }
