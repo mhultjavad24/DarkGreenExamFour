@@ -189,7 +189,6 @@ public class GameUI extends JFrame implements ActionListener {
             timer.setRepeats(false);
             timer.start();
         }
-
     }
 
     @Override
@@ -221,7 +220,7 @@ public class GameUI extends JFrame implements ActionListener {
             if (category.getName().equals(e.getActionCommand())) {
                 List<Question> categorySpecificQuestions = category.getQuestions();
                 //Skicka kategorin här...
-                showGamePanel(categorySpecificQuestions.get(0), null);
+                showGamePanel(categorySpecificQuestions.get(0));
                 return;
             }
         }
