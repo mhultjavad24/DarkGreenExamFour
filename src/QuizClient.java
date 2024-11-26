@@ -20,7 +20,7 @@ public class QuizClient {
 
             System.out.println("Connected to server.");
 
-            // detta är en kategori och skicka välkomstmeddelande
+            // detta är en kategori och skickar välkomstmeddelande
             Category category = new Category("Programming");
             QuizResponse response = new QuizResponse(QuizResponse.ResponseType.WELCOME, List.of(category), null);
             out.writeObject(response);
@@ -34,7 +34,7 @@ public class QuizClient {
                 gameUI.setVisible(true);
             });
 
-            // Steg 4: Lyssna efter serverrespons
+           // Lyssna efter serverrespons
             Object inResponse;
             while ((inResponse = in.readObject()) != null) {
                 System.out.println("Received response from server: " + inResponse);
