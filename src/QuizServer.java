@@ -1,64 +1,47 @@
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.List;
 
 public class QuizServer {
-    public static void main(String[] args) {
+
+    public static void main(String[] args) throws IOException {
         int port = 55556;
+        ServerSocket serverSocket = new ServerSocket(port);
+        System.out.println("Quiz Server is running on port " + port);
 
-        try (
-                ServerSocket serverSocket = new ServerSocket(port);
-                Socket clientSocket = serverSocket.accept();
-                ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
-                ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream())
-        ) {
-            System.out.println("Server is running on port " + port);
+        while (true) {
+            try {
 
-            Object inputLine;
+                System.out.println("Waiting for Player");
+                Socket player1Socket = serverSocket.accept();
+                ClientHandler player1 = new ClientHandler(player1Socket);
+                System.out.println("Player 1 connected");
 
-            // This game loop below needs to be in the Game class
+                System.out.println("Waiting for Player");
+                Socket player2Socket = serverSocket.accept();
+                ClientHandler player2 = new ClientHandler(player2Socket);
+                System.out.println("Player 2 connected");
 
-            while ((inputLine = in.readObject()) != null) {
-                if (inputLine instanceof QuizResponse response) {
-                    switch (response.getType()) {
-                        case WELCOME -> {
-                            System.out.println("Welcome message received");
-                        }
-                        case QUESTION -> {
-                            System.out.println("Question received");
-                        }
-                        case RESULT -> {
-                            System.out.println("Result received");
-                        }
+
+                new Thread(() -> {
+                    try {
+                        System.out.println("Starting a new game for Player 1 and Player 2.");
+                        Thread player1Thread = new Thread(player1);
+                        Thread player2Thread = new Thread(player2);
+
+                        player1Thread.start();
+                        player2Thread.start();
+
+                        player1Thread.join();
+                        player2Thread.join();
+
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
                     }
-                    if (response.getResult() != null) {
-                        System.out.println(response.getResult().getPlayer1RoundScores());
-                    } else {
-                        System.out.println(response.getCategories().getFirst().getName());
-
-                        Question q = new Question("What data type is used to store text?", new Category("Programming"), new String[]{"Integer", "Float", "String", "Boolean"}, 2);
-                        Category category = new Category("Programming", List.of(q));
-                        response.setCategories(List.of(category));
-                        out.writeObject(response);
-                    }
-
-                }
+                }).start();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-
-
-//                while (true) {
-//                    System.out.println("New client connected");
-//
-//
-//                    new Thread(new ClientHandler(clientSocket)).start();
-//                }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
         }
     }
 }
