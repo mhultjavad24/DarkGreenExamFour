@@ -3,13 +3,25 @@ import java.util.List;
 
 public class QuizResponse implements Serializable {
 
+    public enum ResponseType {
+        WELCOME,
+        QUESTION,
+        RESULT
+    }
+
     private List<Category> categories;
     private Result result;
-    private Player player;
+    private ResponseType type;
 
     public QuizResponse(List<Category> categories, Result result) {
         this.categories = categories;
         this.result = result;
+    }
+
+    public QuizResponse(ResponseType type, List<Category> categories, Result result) {
+        this.categories = categories;
+        this.result = result;
+        this.type = type;
     }
 
     public List<Category> getCategories() {
@@ -28,21 +40,13 @@ public class QuizResponse implements Serializable {
         this.result = result;
     }
 
-    public Player getPlayer() {
-        return player;
+    public ResponseType getType() {
+        return type;
     }
 
-    public void setPlayer(Player player) {
-        this.player = player;
+    public void setType(ResponseType type) {
+        this.type = type;
     }
 
-//    @Override
-//    public String toString() {
-//        return "QuizResponse{" +
-//                "categories=" + categories +
-//                ", result=" + result +
-//                ", player=" + player +
-//                '}';
-//    }
 
 }

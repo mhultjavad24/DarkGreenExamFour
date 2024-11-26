@@ -1,35 +1,47 @@
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
 
 public class QuizServer {
-    private static final List<ClientHandler> clients = new ArrayList<>(); //för att hantera flera clienter
 
-    public static void removeClient(ClientHandler client) {
-        clients.remove(client);
-    }
+    public static void main(String[] args) throws IOException {
+        int port = 55556;
+        ServerSocket serverSocket = new ServerSocket(port);
+        System.out.println("Quiz Server is running on port " + port);
 
-    public static void main(String[] args) {
-        int port = 55555;
+        while (true) {
+            try {
 
-        try (ServerSocket serverSocket = new ServerSocket(port)) {
-            System.out.println("Server is running on port " + port);
+                System.out.println("Waiting for Player");
+                Socket player1Socket = serverSocket.accept();
+                ClientHandler player1 = new ClientHandler(player1Socket);
+                System.out.println("Player 1 connected");
 
-            while (true) {
-                Socket clientSocket = serverSocket.accept();
-                System.out.println("New client connected");
+                System.out.println("Waiting for Player");
+                Socket player2Socket = serverSocket.accept();
+                ClientHandler player2 = new ClientHandler(player2Socket);
+                System.out.println("Player 2 connected");
 
-                ClientHandler clientHandler = new ClientHandler(clientSocket);
-                clients.add(clientHandler);
-                new Thread(clientHandler).start();
+
+                new Thread(() -> {
+                    try {
+                        System.out.println("Starting a new game for Player 1 and Player 2.");
+                        Thread player1Thread = new Thread(player1);
+                        Thread player2Thread = new Thread(player2);
+
+                        player1Thread.start();
+                        player2Thread.start();
+
+                        player1Thread.join();
+                        player2Thread.join();
+
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }).start();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }
