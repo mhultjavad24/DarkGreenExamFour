@@ -207,17 +207,21 @@ public class GameUI extends JFrame implements ActionListener {
 
             clickedButton.setBackground(isCorrect ? Color.GREEN : Color.RED);
 
-            // NY - Uppdatera poängtavlan för aktuell spelare och runda
             updateScorePanel(currentPlayer, currentRound, isCorrect);
 
-            Timer timer = new Timer(1000, evt -> {
-                currentRound++;
-                if (currentRound >= questions.size()) {
-                    currentRound = 0;
-                    currentPlayer = (currentPlayer == 1) ? 2 : 1;
-                    showLobbyPanel(true);
-                } else {
-                    showGamePanel(questions.get(currentRound), null);
+            Timer timer = new Timer(1000, new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent evt) {
+                    currentRound++;
+                    if (currentRound >= questions.size()) {
+                        // Återställ rundan och byt spelare om det är slut på frågor
+                        currentRound = 0;
+                        currentPlayer = (currentPlayer == 1) ? 2 : 1;
+                        showLobbyPanel(true);
+                    } else {
+                        // Visa nästa fråga
+                        showGamePanel(questions.get(currentRound), null);
+                    }
                 }
             });
             timer.setRepeats(false);
