@@ -16,6 +16,9 @@ public class GameUI extends JFrame implements ActionListener {
     private Question currentQuestion;
     private ObjectOutputStream out;
     private Game game;
+    private int roundsPerGame;
+    private int questionsPerRound;
+    // private int questionAskedInCurrentRound = 0;
 
     // NY listor för att hålla referenser till rutorna
     private List<JPanel> scorePanelsPlayerOne = new ArrayList<>();
@@ -25,9 +28,13 @@ public class GameUI extends JFrame implements ActionListener {
     private int currentRound = 0;
     private int currentPlayer = 1; // 1 = Player 1, 2 = Player 2
 
-    public GameUI(List<Category> categories, List<Question> questions) {
+    public GameUI(List<Category> categories, List<Question> questions, int roundsPerGame, int questionsPerRound, ObjectOutPutStream out) {
         this.categories = categories;
         this.questions = questions;
+        this.roundsPerGame = roundsPerGame;
+        this.questionsPerRound = questionsPerRound;
+        this.out = out;
+
     }
 
     public static void main(String[] args) {
@@ -88,18 +95,6 @@ public class GameUI extends JFrame implements ActionListener {
                 categoryPanel.add(waitingLabel);
             }
 
-            java.util.Properties properties = new java.util.Properties();
-            int roundsPerGame = 0;
-            int questionsPerRound = 0;
-
-            try (FileInputStream input = new FileInputStream("config.properties")) {
-                properties.load(input);
-                roundsPerGame = Integer.parseInt(properties.getProperty("roundsPerGame"));
-                questionsPerRound = Integer.parseInt(properties.getProperty("questionsPerRound"));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-
             // Uppdaterad för att inkludera scorePanels
             JPanel scorePanelPlayerOne = createScorePanel(roundsPerGame, questionsPerRound, Color.GRAY, scorePanelsPlayerOne);
             scorePanelPlayerOne.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -150,8 +145,7 @@ public class GameUI extends JFrame implements ActionListener {
         }
     }
 
-    public void showGamePanel(Question question, ObjectOutputStream out) {
-        this.out = out;
+    public void showGamePanel(Question question) {
         this.currentQuestion = question;
         setTitle("DarkGreen Quiz");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -189,6 +183,7 @@ public class GameUI extends JFrame implements ActionListener {
 
         revalidate();
         repaint();
+   
     }
 
     @Override
@@ -198,7 +193,9 @@ public class GameUI extends JFrame implements ActionListener {
         for (Category category : categories) {
             if (category.getName().equals(e.getActionCommand())) {
                 List<Question> categorySpecificQuestions = category.getQuestions();
+
                 showGamePanel(categorySpecificQuestions.get(0), null);
+
                 return;
             }
         }
