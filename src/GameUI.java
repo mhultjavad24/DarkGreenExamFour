@@ -28,7 +28,8 @@ public class GameUI extends JFrame implements ActionListener {
     private int currentRound = 0;
     private int currentPlayer = 1; // 1 = Player 1, 2 = Player 2
 
-    public GameUI(List<Category> categories, List<Question> questions, int roundsPerGame, int questionsPerRound, ObjectOutPutStream out) {
+    public GameUI(List<Category> categories, List<Question> questions,
+                  int roundsPerGame, int questionsPerRound, ObjectOutputStream out) {
         this.categories = categories;
         this.questions = questions;
         this.roundsPerGame = roundsPerGame;
@@ -37,6 +38,7 @@ public class GameUI extends JFrame implements ActionListener {
 
     }
 
+    /*
     public static void main(String[] args) {
         List<Category> categories = new ArrayList<>();
         categories.add(new Category("Programming"));
@@ -58,6 +60,7 @@ public class GameUI extends JFrame implements ActionListener {
         gameUI.showLobbyPanel(true);
         gameUI.setVisible(true);
     }
+     */
 
     public void showLobbyPanel(boolean chooseCategory) {
         setTitle("DarkGreen Quiz");
@@ -194,7 +197,7 @@ public class GameUI extends JFrame implements ActionListener {
             if (category.getName().equals(e.getActionCommand())) {
                 List<Question> categorySpecificQuestions = category.getQuestions();
 
-                showGamePanel(categorySpecificQuestions.get(0), null);
+                showGamePanel(categorySpecificQuestions.get(0));
 
                 return;
             }
@@ -218,7 +221,7 @@ public class GameUI extends JFrame implements ActionListener {
                         currentPlayer = (currentPlayer == 1) ? 2 : 1; // DETTA växlar spelare
                         showLobbyPanel(true);
                     } else {
-                        showGamePanel(questions.get(currentRound), null);
+                        showGamePanel(questions.get(currentRound));
                     }
                 }
             });
