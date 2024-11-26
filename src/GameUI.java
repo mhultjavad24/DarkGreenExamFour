@@ -223,10 +223,12 @@ public class GameUI extends JFrame implements ActionListener {
                 public void actionPerformed(ActionEvent evt) {
                     currentRound++;
                     if (currentRound >= questions.size()) {
+                        // Återställ rundan och byt spelare om det är slut på frågor
                         currentRound = 0;
                         currentPlayer = (currentPlayer == 1) ? 2 : 1;
                         showLobbyPanel(true);
                     } else {
+                        // Visa nästa fråga
                         showGamePanel(questions.get(currentRound), null);
                     }
                 }
@@ -235,4 +237,4 @@ public class GameUI extends JFrame implements ActionListener {
             timer.start();
         }
     }
-    }
+}
