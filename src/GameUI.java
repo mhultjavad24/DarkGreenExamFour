@@ -208,7 +208,7 @@ public class GameUI extends JFrame implements ActionListener {
             }
         }
 
-        // Om vi redan har en aktiv fråga
+
         if (currentQuestion != null) {
             // Kontrollera spelarens svar
             String selectedAnswer = e.getActionCommand();
