@@ -26,7 +26,7 @@ public class QuizClient {
             out.writeObject(response);
 
             // En endaste instans av GameUi
-            GameUI gameUI = new GameUI(List.of(category), null);
+            GameUI gameUI = new GameUI(List.of(category), null); //Här behöver vi mata in en del i konstruktorn
 
             // Visar lobbyn
             SwingUtilities.invokeLater(() -> {
@@ -45,7 +45,7 @@ public class QuizClient {
                         Question firstQuestion = c.getQuestions().get(0); // Hämtar första frågan
 
                         // Uppdatera befintlig GameUI-instans och visar frågan
-                        gameUI.showGamePanel(firstQuestion, out);
+                        gameUI.showGamePanel(firstQuestion);
                     });
                 }
             }
