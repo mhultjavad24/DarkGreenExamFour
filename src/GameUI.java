@@ -58,6 +58,7 @@ public class GameUI extends JFrame implements ActionListener {
         setSize(500, 400);
         setLocationRelativeTo(null);
 
+
         if (lobbyPanel == null) {
             lobbyPanel = new JPanel(new BorderLayout());
             JPanel categoryPanel = new JPanel(new GridLayout(4, 1));
@@ -70,8 +71,9 @@ public class GameUI extends JFrame implements ActionListener {
             JLabel playerTwoLabel = new JLabel("Player 2");
             playerTwoLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-            JLabel chooseCategoryLabel = new JLabel("Choose Category");
+            JLabel chooseCategoryLabel = new JLabel("Player " + currentPlayer + ", choose a category"); // NY
             chooseCategoryLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
 
             if (chooseCategory) {
                 categoryPanel.add(chooseCategoryLabel);
@@ -139,7 +141,7 @@ public class GameUI extends JFrame implements ActionListener {
         return panel;
     }
 
-    // NY Metod för att uppdatera poängtavlans rutor
+    // NY Metod för att uppdatera poängtavlans rutor - detta inkl både player 1 å 2
     private void updateScorePanel(int player, int round, boolean isCorrect) {
         List<JPanel> scorePanels = (player == 1) ? scorePanelsPlayerOne : scorePanelsPlayerTwo;
         if (round >= 0 && round < scorePanels.size()) {
@@ -216,10 +218,9 @@ public class GameUI extends JFrame implements ActionListener {
                     if (currentRound >= questions.size()) {
                         // Återställ rundan och byt spelare om det är slut på frågor
                         currentRound = 0;
-                        currentPlayer = (currentPlayer == 1) ? 2 : 1;
+                        currentPlayer = (currentPlayer == 1) ? 2 : 1; // DETTA växlar spelare
                         showLobbyPanel(true);
                     } else {
-                        // Visa nästa fråga
                         showGamePanel(questions.get(currentRound), null);
                     }
                 }
