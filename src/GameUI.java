@@ -16,6 +16,9 @@ public class GameUI extends JFrame implements ActionListener {
     private Question currentQuestion;
     private ObjectOutputStream out;
     private Game game;
+    private int roundsPerGame;
+    private int questionsPerRound;
+    //private int questionAskedInCurrentRound = 0;
 
     // NY listor för att hålla referenser till rutorna
     private List<JPanel> scorePanelsPlayerOne = new ArrayList<>();
@@ -25,11 +28,17 @@ public class GameUI extends JFrame implements ActionListener {
     private int currentRound = 0;
     private int currentPlayer = 1; // 1 = Player 1, 2 = Player 2
 
-    public GameUI(List<Category> categories, List<Question> questions) {
+    public GameUI(List<Category> categories, List<Question> questions,
+                  int roundsPerGame, int questionsPerRound, ObjectOutputStream out) {
         this.categories = categories;
         this.questions = questions;
+        this.roundsPerGame = roundsPerGame;
+        this.questionsPerRound = questionsPerRound;
+        this.out = out;
+
     }
 
+    /*
     public static void main(String[] args) {
         List<Category> categories = new ArrayList<>();
         categories.add(new Category("Programming"));
@@ -51,12 +60,14 @@ public class GameUI extends JFrame implements ActionListener {
         gameUI.showLobbyPanel(true);
         gameUI.setVisible(true);
     }
+     */
 
     public void showLobbyPanel(boolean chooseCategory) {
         setTitle("DarkGreen Quiz");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(500, 400);
         setLocationRelativeTo(null);
+
 
         if (lobbyPanel == null) {
             lobbyPanel = new JPanel(new BorderLayout());
@@ -70,8 +81,9 @@ public class GameUI extends JFrame implements ActionListener {
             JLabel playerTwoLabel = new JLabel("Player 2");
             playerTwoLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-            JLabel chooseCategoryLabel = new JLabel("Choose Category");
+            JLabel chooseCategoryLabel = new JLabel("Player " + currentPlayer + ", choose a category"); // NY
             chooseCategoryLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
 
             if (chooseCategory) {
                 categoryPanel.add(chooseCategoryLabel);
@@ -84,18 +96,6 @@ public class GameUI extends JFrame implements ActionListener {
                 JLabel waitingLabel = new JLabel("Waiting for opponent...");
                 waitingLabel.setHorizontalAlignment(SwingConstants.CENTER);
                 categoryPanel.add(waitingLabel);
-            }
-
-            java.util.Properties properties = new java.util.Properties();
-            int roundsPerGame = 0;
-            int questionsPerRound = 0;
-
-            try (FileInputStream input = new FileInputStream("config.properties")) {
-                properties.load(input);
-                roundsPerGame = Integer.parseInt(properties.getProperty("roundsPerGame"));
-                questionsPerRound = Integer.parseInt(properties.getProperty("questionsPerRound"));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
             }
 
             // Uppdaterad för att inkludera scorePanels
@@ -139,7 +139,7 @@ public class GameUI extends JFrame implements ActionListener {
         return panel;
     }
 
-    // NY Metod för att uppdatera poängtavlans rutor
+    // NY Metod för att uppdatera poängtavlans rutor - detta inkl både player 1 å 2
     private void updateScorePanel(int player, int round, boolean isCorrect) {
         List<JPanel> scorePanels = (player == 1) ? scorePanelsPlayerOne : scorePanelsPlayerTwo;
         if (round >= 0 && round < scorePanels.size()) {
@@ -148,8 +148,7 @@ public class GameUI extends JFrame implements ActionListener {
         }
     }
 
-    public void showGamePanel(Question question, ObjectOutputStream out) {
-        this.out = out;
+    public void showGamePanel(Question question) {
         this.currentQuestion = question;
         setTitle("DarkGreen Quiz");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -187,30 +186,24 @@ public class GameUI extends JFrame implements ActionListener {
 
         revalidate();
         repaint();
+   
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        // Hämta den klickade knappen
         JButton clickedButton = (JButton) e.getSource();
 
-        // Kontrollera om en kategori valts
         for (Category category : categories) {
             if (category.getName().equals(e.getActionCommand())) {
-                // Hämta frågor för den valda kategorin
                 List<Question> categorySpecificQuestions = category.getQuestions();
-                if (!categorySpecificQuestions.isEmpty()) {
-                    showGamePanel(categorySpecificQuestions.get(0), null);
-                } else {
-                    System.out.println("Inga frågor tillgängliga för kategorin: " + category.getName());
-                }
-                return; // Avsluta när en kategori hanteras
+
+                showGamePanel(categorySpecificQuestions.get(0));
+
+                return;
             }
         }
 
-
         if (currentQuestion != null) {
-            // Kontrollera spelarens svar
             String selectedAnswer = e.getActionCommand();
             boolean isCorrect = currentQuestion.isCorrectAnswer(selectedAnswer);
 
@@ -225,11 +218,10 @@ public class GameUI extends JFrame implements ActionListener {
                     if (currentRound >= questions.size()) {
                         // Återställ rundan och byt spelare om det är slut på frågor
                         currentRound = 0;
-                        currentPlayer = (currentPlayer == 1) ? 2 : 1;
+                        currentPlayer = (currentPlayer == 1) ? 2 : 1; // DETTA växlar spelare
                         showLobbyPanel(true);
                     } else {
-                        // Visa nästa fråga
-                        showGamePanel(questions.get(currentRound), null);
+                        showGamePanel(questions.get(currentRound));
                     }
                 }
             });

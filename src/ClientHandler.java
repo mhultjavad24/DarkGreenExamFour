@@ -48,7 +48,7 @@ public class ClientHandler implements Runnable {
         } finally {
             try {
                 socket.close();
-                QuizServer.removeClient(this);
+              //  QuizServer.removeClient(this);
             } catch (IOException e) {
                 e.printStackTrace();
             }
