@@ -10,18 +10,17 @@ public class QuizClient {
     private static String playerName;
 
     public static void main(String[] args) {
-
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter your name: ");
         playerName = scanner.nextLine();
-        try (Socket socket = new Socket("127.0.0.1", 55555);
+        try (Socket socket = new Socket("127.0.0.1", 55556);
              ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
              ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
 
             System.out.println("Connected to server.");
 
             Category category = new Category("Programming");
-            QuizResponse response = new QuizResponse(List.of(category), null);
+            QuizResponse response = new QuizResponse(QuizResponse.ResponseType.WELCOME, List.of(category), null);
             out.writeObject(response);
             GameUI gameUI = new GameUI(List.of(category), null);
 
@@ -36,7 +35,10 @@ public class QuizClient {
                 if (inResponse instanceof QuizResponse quizResponse) {
                     SwingUtilities.invokeLater(() -> {
                         Category c = quizResponse.getCategories().getFirst();
-                        gameUI.showLobbyPanel(true);
+                        GameUI gameUI = new GameUI(List.of(c));
+                        gameUI.showGamePanel(c.getQuestions().getFirst(), out);
+//                        gameUI.showLobbyPanel(true);
+                        gameUI.setVisible(true);
 
                     });
                 }
