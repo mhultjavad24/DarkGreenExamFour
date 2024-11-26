@@ -35,7 +35,7 @@ public class QuizClient {
                 if (inResponse instanceof QuizResponse quizResponse) {
                     SwingUtilities.invokeLater(() -> {
                         Category c = quizResponse.getCategories().getFirst();
-                        GameUI gameUI = new GameUI(List.of(c));
+                        //GameUI gameUI = new GameUI(List.of(c));
                         gameUI.showGamePanel(c.getQuestions().getFirst(), out);
 //                        gameUI.showLobbyPanel(true);
                         gameUI.setVisible(true);

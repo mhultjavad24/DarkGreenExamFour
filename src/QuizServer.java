@@ -44,4 +44,7 @@ public class QuizServer {
             }
         }
     }
+
+    public static void removeClient(ClientHandler clientHandler) {
+    }
 }
