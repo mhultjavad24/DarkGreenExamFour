@@ -14,10 +14,16 @@ public class GameUI extends JFrame implements ActionListener {
     private JPanel gamePanel;
     private Question currentQuestion;
     private ObjectOutputStream out;
+    private int roundsPerGame;
+    private int questionsPerRound;
+    private int questionAskedInCurrentRound = 0;
 
 
-    public GameUI(List<Category> categories) {
+    public GameUI(List<Category> categories, ObjectOutputStream out, int roundsPerGame, int questionsPerRound) {
         this.categories = categories;
+        this.out = out;
+        this.roundsPerGame = roundsPerGame;
+        this.questionsPerRound = questionsPerRound;
     }
 
     public void showLobbyPanel(boolean chooseCategory) {
@@ -54,18 +60,6 @@ public class GameUI extends JFrame implements ActionListener {
                 JLabel waitingLabel = new JLabel("Waiting for opponent...");
                 waitingLabel.setHorizontalAlignment(SwingConstants.CENTER);
                 categoryPanel.add(waitingLabel);
-            }
-
-            java.util.Properties properties = new java.util.Properties();
-            int roundsPerGame = 0;
-            int questionsPerRound = 0;
-
-            try (FileInputStream input = new FileInputStream("config.properties")) {
-                properties.load(input);
-                roundsPerGame = Integer.parseInt(properties.getProperty("roundsPerGame"));
-                questionsPerRound = Integer.parseInt(properties.getProperty("questionsPerRound"));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
             }
 
             JPanel scorePanelPlayerOne = createScorePanel(roundsPerGame, questionsPerRound, Color.GRAY);
@@ -112,8 +106,7 @@ public class GameUI extends JFrame implements ActionListener {
     //Här kanske man behöver ha kategori som inparameter istället för frågan?
     //Så att man sen kan iterera genom frågorna per kategori och inte behöver anropa
     //showGamePanel för varje fråga. Tankar?
-    public void showGamePanel(Question question, ObjectOutputStream out) {
-        this.out = out;
+    public void showGamePanel(Question question) {
         this.currentQuestion = question;
         setTitle("DarkGreen Quiz");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -172,14 +165,22 @@ public class GameUI extends JFrame implements ActionListener {
 
             Timer timer = new Timer(1000, evt -> {
 
-                Category currentCategory = currentQuestion.getCategory();
-                List <Question> questions = currentCategory.getQuestions();
-                int currentIndex = questions.indexOf(currentQuestion);
+                questionAskedInCurrentRound++;
 
-                if (currentIndex + 1 < questions.size()) {
-                    currentQuestion = questions.get(currentIndex + 1);
-                    showGamePanel(currentQuestion, null);
+                if (questionAskedInCurrentRound < questionsPerRound) {
+
+                    Category currentCategory = currentQuestion.getCategory();
+                    List<Question> questions = currentCategory.getQuestions();
+                    int currentIndex = questions.indexOf(currentQuestion);
+
+                    if (currentIndex + 1 < questions.size()) {
+                        currentQuestion = questions.get(currentIndex + 1);
+                        showGamePanel(currentQuestion);
+                    } else {
+                        showLobbyPanel(false);
+                    }
                 } else {
+                    questionAskedInCurrentRound = 0;
                     showLobbyPanel(false);
                 }
 
