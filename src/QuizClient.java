@@ -18,7 +18,7 @@ public class QuizClient {
             Result result = null;
             List<Question> questions = new ArrayList<>();
             Category category = new Category("Programming");
-            QuizResponse response = new QuizResponse(List.of(category), null);
+            QuizResponse response = new QuizResponse(QuizResponse.ResponseType.WELCOME, List.of(category), null);
             out.writeObject(response);
 
             Object inResponse;
