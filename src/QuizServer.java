@@ -19,8 +19,21 @@ public class QuizServer {
 
             Object inputLine;
 
+            // This game loop below needs to be in the Game class
+
             while ((inputLine = in.readObject()) != null) {
                 if (inputLine instanceof QuizResponse response) {
+                    switch (response.getType()) {
+                        case WELCOME -> {
+                            System.out.println("Welcome message received");
+                        }
+                        case QUESTION -> {
+                            System.out.println("Question received");
+                        }
+                        case RESULT -> {
+                            System.out.println("Result received");
+                        }
+                    }
                     if (response.getResult() != null) {
                         System.out.println(response.getResult().getPlayer1RoundScores());
                     } else {
