@@ -7,7 +7,7 @@ import java.util.List;
 
 public class QuizServer {
     public static void main(String[] args) {
-        int port = 55555;
+        int port = 55556;
 
         try (
                 ServerSocket serverSocket = new ServerSocket(port);

@@ -8,7 +8,7 @@ import java.util.List;
 
 public class QuizClient {
     public static void main(String[] args) {
-        try (Socket socket = new Socket("127.0.0.1", 55555);
+        try (Socket socket = new Socket("127.0.0.1", 55556);
              ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
              ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
 
@@ -29,7 +29,7 @@ public class QuizClient {
                         Category c = quizResponse.getCategories().getFirst();
 
 
-                        GameUI gameUI = new GameUI(List.of(c), null);
+                        GameUI gameUI = new GameUI(List.of(c));
                         gameUI.showGamePanel(c.getQuestions().getFirst(), out);
 //                        gameUI.showLobbyPanel(true);
                         gameUI.setVisible(true);
