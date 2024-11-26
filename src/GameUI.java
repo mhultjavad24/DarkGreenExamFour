@@ -10,41 +10,14 @@ import java.util.List;
 
 public class GameUI extends JFrame implements ActionListener {
     private List<Category> categories;
-    private List<Question> questions;
     private JPanel lobbyPanel;
     private JPanel gamePanel;
     private Question currentQuestion;
     private ObjectOutputStream out;
 
 
-    public GameUI(List<Category> categories, List<Question> questions) {
+    public GameUI(List<Category> categories) {
         this.categories = categories;
-        this.questions = questions;
-    }
-
-    public static void main(String[] args) {
-
-//        För att testa:
-        List<Category> categories = new ArrayList<>();
-        categories.add(new Category("Programming"));
-        categories.add(new Category("Animals and Nature"));
-        Category c1 = new Category("History");
-        categories.add(c1);
-
-        List<Question> historyQuestions = new ArrayList<>();
-        String[] answers = {"1939", "1940", "1941", "1942"};
-        Question question3 = new Question("When did second world war start?", c1, answers, 0);
-
-        historyQuestions.add(question3);
-        c1.setQuestions(historyQuestions);
-
-        List<Question> questions = new ArrayList<>();
-        questions.add(question3);
-
-        GameUI gameUI = new GameUI(categories, questions);
-        gameUI.showLobbyPanel(true);
-        gameUI.setVisible(true);
-//        gameUI.showGamePanel(question3);
     }
 
     public void showLobbyPanel(boolean chooseCategory) {
@@ -184,20 +157,42 @@ public class GameUI extends JFrame implements ActionListener {
 
     }
 
+    public void validateAnswer(ActionEvent e) {
+
+        if (e.getSource() instanceof JButton clickedButton) {
+            String selectedAnswer = e.getActionCommand();
+            boolean isCorrect = currentQuestion.isCorrectAnswer(selectedAnswer);
+
+            if (isCorrect) {
+                clickedButton.setBackground(Color.GREEN);
+                //Plussa på score
+            } else {
+                clickedButton.setBackground(Color.RED);
+            }
+
+            Timer timer = new Timer(1000, evt -> {
+
+                Category currentCategory = currentQuestion.getCategory();
+                List <Question> questions = currentCategory.getQuestions();
+                int currentIndex = questions.indexOf(currentQuestion);
+
+                if (currentIndex + 1 < questions.size()) {
+                    currentQuestion = questions.get(currentIndex + 1);
+                    showGamePanel(currentQuestion, null);
+                } else {
+                    showLobbyPanel(false);
+                }
+
+            });
+
+            timer.setRepeats(false);
+            timer.start();
+        }
+
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
-
-        /*
-        To-do:
-        Kolla av vad för typ av knapp som tryckts på
-        Om kategori - Kolla vilken kategori som valts och gå vidare till GamePanel
-        Om svarsknapp - Kolla vilket svar som angivits, se om det var rätt
-        Ändra färg på knappen som tryckts på. Rött - fel. Grönt - rätt
-        Visa nästa fråga
-        Loop som avgör hur många frågor och rundor
-        Ändra färger på rutor i Lobbyn baserat på poäng för rundan
-        osv
-         */
 
         if (this.out != null) {
             // sdsd
@@ -221,30 +216,18 @@ public class GameUI extends JFrame implements ActionListener {
             }
         }
 
-
-        JButton clickedButton = (JButton) e.getSource();
-
         for (Category category : categories) {
             if (category.getName().equals(e.getActionCommand())) {
                 List<Question> categorySpecificQuestions = category.getQuestions();
+                //Skicka kategorin här...
                 showGamePanel(categorySpecificQuestions.get(0), null);
                 return;
             }
         }
 
-        //Bakgrundsfärg ändras aldrig på min dator så jag
-        // har svårt att avgöra om det här fungerar eller inte /Melina
         if (currentQuestion != null) {
-            String selectedAnswer = e.getActionCommand();
-            if (currentQuestion.isCorrectAnswer(selectedAnswer)) {
-                clickedButton.setBackground(Color.GREEN);
-            } else {
-                clickedButton.setBackground(Color.RED);
-            }
+            validateAnswer(e);
         }
-
-        revalidate();
-        repaint();
 
     }
 }
