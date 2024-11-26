@@ -10,18 +10,49 @@ import java.util.List;
 
 public class GameUI extends JFrame implements ActionListener {
     private List<Category> categories;
+    private List<Question> questions;
     private JPanel lobbyPanel;
     private JPanel gamePanel;
     private Question currentQuestion;
     private ObjectOutputStream out;
+    private Game game;
 
+    // NY listor för att hålla referenser till rutorna
+    private List<JPanel> scorePanelsPlayerOne = new ArrayList<>();
+    private List<JPanel> scorePanelsPlayerTwo = new ArrayList<>();
 
-    public GameUI(List<Category> categories) {
+    // Spåra aktuella rundor för poänguppdatering
+    private int currentRound = 0;
+    private int currentPlayer = 1; // 1 = Player 1, 2 = Player 2
+
+    public GameUI(List<Category> categories, List<Question> questions) {
         this.categories = categories;
+        this.questions = questions;
+    }
+
+    public static void main(String[] args) {
+        List<Category> categories = new ArrayList<>();
+        categories.add(new Category("Programming"));
+        categories.add(new Category("Animals and Nature"));
+        Category c1 = new Category("History");
+        categories.add(c1);
+
+        List<Question> historyQuestions = new ArrayList<>();
+        String[] answers = {"1939", "1940", "1941", "1942"};
+        Question question3 = new Question("When did the second world war start?", c1, answers, 0);
+
+        historyQuestions.add(question3);
+        c1.setQuestions(historyQuestions);
+
+        List<Question> questions = new ArrayList<>();
+        questions.add(question3);
+
+        GameUI gameUI = new GameUI(categories, questions);
+        gameUI.showLobbyPanel(true);
+        gameUI.setVisible(true);
     }
 
     public void showLobbyPanel(boolean chooseCategory) {
-
         setTitle("DarkGreen Quiz");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(500, 400);
@@ -39,12 +70,11 @@ public class GameUI extends JFrame implements ActionListener {
             JLabel playerTwoLabel = new JLabel("Player 2");
             playerTwoLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-
-            JLabel ChooseCatagory = new JLabel("Choose Catagory");
-            ChooseCatagory.setHorizontalAlignment(SwingConstants.CENTER);
+            JLabel chooseCategoryLabel = new JLabel("Choose Category");
+            chooseCategoryLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
             if (chooseCategory) {
-                categoryPanel.add(ChooseCatagory);
+                categoryPanel.add(chooseCategoryLabel);
                 for (Category category : categories) {
                     JButton button = new JButton(category.getName());
                     button.addActionListener(this);
@@ -68,9 +98,10 @@ public class GameUI extends JFrame implements ActionListener {
                 throw new RuntimeException(e);
             }
 
-            JPanel scorePanelPlayerOne = createScorePanel(roundsPerGame, questionsPerRound, Color.GRAY);
+            // Uppdaterad för att inkludera scorePanels
+            JPanel scorePanelPlayerOne = createScorePanel(roundsPerGame, questionsPerRound, Color.GRAY, scorePanelsPlayerOne);
             scorePanelPlayerOne.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-            JPanel scorePanelPlayerTwo = createScorePanel(roundsPerGame, questionsPerRound, Color.GRAY);
+            JPanel scorePanelPlayerTwo = createScorePanel(roundsPerGame, questionsPerRound, Color.GRAY, scorePanelsPlayerTwo);
             scorePanelPlayerTwo.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
             northPanel.add(playerOneLabel);
@@ -92,26 +123,31 @@ public class GameUI extends JFrame implements ActionListener {
 
         revalidate();
         repaint();
-
     }
 
-    private JPanel createScorePanel(int rows, int col, Color color) {
+    // NY skapa och spara referenser till poängtavlans rutor
+    private JPanel createScorePanel(int rows, int col, Color color, List<JPanel> scorePanels) {
         JPanel panel = new JPanel(new GridLayout(rows, col, 10, 10));
         panel.setBackground(Color.WHITE);
 
         for (int i = 0; i < rows * col; i++) {
             JPanel cell = new JPanel();
             cell.setBackground(color);
-
+            scorePanels.add(cell); // Sparar referens till varje cell
             panel.add(cell);
         }
         return panel;
     }
 
+    // NY Metod för att uppdatera poängtavlans rutor
+    private void updateScorePanel(int player, int round, boolean isCorrect) {
+        List<JPanel> scorePanels = (player == 1) ? scorePanelsPlayerOne : scorePanelsPlayerTwo;
+        if (round >= 0 && round < scorePanels.size()) {
+            JPanel cell = scorePanels.get(round);
+            cell.setBackground(isCorrect ? Color.GREEN : Color.RED);
+        }
+    }
 
-    //Här kanske man behöver ha kategori som inparameter istället för frågan?
-    //Så att man sen kan iterera genom frågorna per kategori och inte behöver anropa
-    //showGamePanel för varje fråga. Tankar?
     public void showGamePanel(Question question, ObjectOutputStream out) {
         this.out = out;
         this.currentQuestion = question;
@@ -121,7 +157,6 @@ public class GameUI extends JFrame implements ActionListener {
         setLocationRelativeTo(null);
 
         if (gamePanel == null) {
-
             gamePanel = new JPanel(new BorderLayout());
             JPanel buttonPanel = new JPanel(new GridLayout(2, 2));
 
@@ -130,10 +165,9 @@ public class GameUI extends JFrame implements ActionListener {
             JLabel categoryLabel = new JLabel(question.getCategory().getName());
             categoryLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-
             for (String answer : question.answers) {
                 JButton button = new JButton(answer);
-                button.setActionCommand(String.valueOf(answer));
+                button.setActionCommand(answer);
                 button.addActionListener(this);
                 buttonPanel.add(button);
             }
@@ -143,7 +177,6 @@ public class GameUI extends JFrame implements ActionListener {
             gamePanel.add(buttonPanel, BorderLayout.SOUTH);
 
             add(gamePanel);
-
         }
 
         if (lobbyPanel != null) {
@@ -154,80 +187,41 @@ public class GameUI extends JFrame implements ActionListener {
 
         revalidate();
         repaint();
-
-    }
-
-    public void validateAnswer(ActionEvent e) {
-
-        if (e.getSource() instanceof JButton clickedButton) {
-            String selectedAnswer = e.getActionCommand();
-            boolean isCorrect = currentQuestion.isCorrectAnswer(selectedAnswer);
-
-            if (isCorrect) {
-                clickedButton.setBackground(Color.GREEN);
-                //Plussa på score
-            } else {
-                clickedButton.setBackground(Color.RED);
-            }
-
-            Timer timer = new Timer(1000, evt -> {
-
-                Category currentCategory = currentQuestion.getCategory();
-                List <Question> questions = currentCategory.getQuestions();
-                int currentIndex = questions.indexOf(currentQuestion);
-
-                if (currentIndex + 1 < questions.size()) {
-                    currentQuestion = questions.get(currentIndex + 1);
-                    showGamePanel(currentQuestion, null);
-                } else {
-                    showLobbyPanel(false);
-                }
-
-            });
-
-            timer.setRepeats(false);
-            timer.start();
-        }
-
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
-        if (this.out != null) {
-            // sdsd
-            List<Integer> p1RoundScore = new ArrayList<>();
-            List<Integer> p2RoundScore = new ArrayList<>();
-
-            p1RoundScore.add(1);
-            p1RoundScore.add(2);
-            p1RoundScore.add(3);
-
-            p2RoundScore.add(2);
-            p2RoundScore.add(1);
-            p2RoundScore.add(3);
-
-            Result r = new Result(p1RoundScore, p2RoundScore);
-            QuizResponse quizResponse1 = new QuizResponse(List.of(), r);
-            try {
-                this.out.writeObject(quizResponse1);
-            } catch (IOException e1) {
-                throw new RuntimeException(e1);
-            }
-        }
+        JButton clickedButton = (JButton) e.getSource();
 
         for (Category category : categories) {
             if (category.getName().equals(e.getActionCommand())) {
                 List<Question> categorySpecificQuestions = category.getQuestions();
-                //Skicka kategorin här...
                 showGamePanel(categorySpecificQuestions.get(0), null);
                 return;
             }
         }
 
         if (currentQuestion != null) {
-            validateAnswer(e);
-        }
+            String selectedAnswer = e.getActionCommand();
+            boolean isCorrect = currentQuestion.isCorrectAnswer(selectedAnswer);
 
+            clickedButton.setBackground(isCorrect ? Color.GREEN : Color.RED);
+
+            // NY - Uppdatera poängtavlan för aktuell spelare och runda
+            updateScorePanel(currentPlayer, currentRound, isCorrect);
+
+            Timer timer = new Timer(1000, evt -> {
+                currentRound++;
+                if (currentRound >= questions.size()) {
+                    currentRound = 0;
+                    currentPlayer = (currentPlayer == 1) ? 2 : 1;
+                    showLobbyPanel(true);
+                } else {
+                    showGamePanel(questions.get(currentRound), null);
+                }
+            });
+            timer.setRepeats(false);
+            timer.start();
+        }
     }
 }
