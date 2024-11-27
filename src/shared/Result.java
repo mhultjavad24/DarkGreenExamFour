@@ -1,9 +1,23 @@
+package shared;
+
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Result implements Serializable {
     private List<Integer> player1RoundScores;
     private List<Integer> player2RoundScores;
+
+    public Result() {
+        this.player1RoundScores = new ArrayList<>();
+        this.player1RoundScores.add(0);
+        this.player1RoundScores.add(0);
+        this.player1RoundScores.add(0);
+        this.player2RoundScores = new ArrayList<>();
+        this.player2RoundScores.add(0);
+        this.player2RoundScores.add(0);
+        this.player2RoundScores.add(0);
+    }
 
     public Result(List<Integer> player1RoundScores, List<Integer> player2RoundScores) {
         this.player1RoundScores = player1RoundScores;
