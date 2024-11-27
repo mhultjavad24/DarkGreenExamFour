@@ -12,6 +12,7 @@ public class ServerGame extends Thread {
     private PlayerConnection currentPlayer;
     private int roundsPerGame;
     private int questionsPerRound;
+    private boolean isPlayerOneTurn = true;
 
     public ServerGame(PlayerConnection player1, PlayerConnection player2, int roundsPerGame, int questionsPerRound) {
         this.player1 = player1;
@@ -40,19 +41,24 @@ public class ServerGame extends Thread {
             }
 
             switch (response.getType()) {
-                case WELCOME -> {
-                    System.out.println("Welcome message received at ServerGame");
-                }
-                case QUESTION -> {
-//                    currentPlayer.sendQuestion();
-                }
                 case RESULT -> {
+                    // Skicka resultat till båda spelarna
+                    player1.sendResponse(response);
                     player2.sendResponse(response);
 
-//                    currentPlayer.sendResult();
+                    // Växla spelare
+                    isPlayerOneTurn = !isPlayerOneTurn;
+                    currentPlayer = isPlayerOneTurn ? player1 : player2;
+
+                    // Skicka meddelande om vems tur det är
+                    player1.sendResponse(new Response(Response.ResponseType.MESSAGE,
+                            isPlayerOneTurn ? "Your turn!" : "Waiting for opponent..."));
+                    player2.sendResponse(new Response(Response.ResponseType.MESSAGE,
+                            !isPlayerOneTurn ? "Your turn!" : "Waiting for opponent..."));
                 }
             }
         }
+    }
 
 
 
@@ -71,4 +77,3 @@ public class ServerGame extends Thread {
     }
 
 
-}

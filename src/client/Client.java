@@ -70,6 +70,7 @@ public class Client {
                         System.out.println("Result message received at Client");
                         gameUI.startRound(inResponse.getCategory());
                     }
+
                 }
 
 //                if (inResponse instanceof Response quizResponse) {

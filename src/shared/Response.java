@@ -9,14 +9,17 @@ public class Response implements Serializable {
         WELCOME,
         QUESTION,
         RESULT,
-        WAIT
+        WAIT,
+        MESSAGE // Ny typ för meddelanden
     }
 
     private List<Category> categories;
     private Category category;
     private Result result;
     private ResponseType type;
+    private String message; // Nytt fält för textmeddelanden
 
+    // Konstruktorer
     public Response(List<Category> categories, Result result) {
         this.categories = categories;
         this.result = result;
@@ -34,6 +37,12 @@ public class Response implements Serializable {
         this.type = type;
     }
 
+    public Response(ResponseType type, String message) {
+        this.type = type;
+        this.message = message;
+    }
+
+    // Getters och Setters
     public List<Category> getCategories() {
         return categories;
     }
@@ -62,6 +71,23 @@ public class Response implements Serializable {
         return category;
     }
 
+    public void setCategory(Category category) {
+        this.category = category;
+    }
 
+    public String getMessage() {
+        return message;
+    }
 
+    // t-S för debugging
+    @Override
+    public String toString() {
+        return "Response{" +
+                "categories=" + categories +
+                ", category=" + category +
+                ", result=" + result +
+                ", type=" + type +
+                ", message='" + message + '\'' +
+                '}';
+    }
 }
