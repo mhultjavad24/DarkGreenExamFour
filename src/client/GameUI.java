@@ -26,6 +26,7 @@ public class GameUI extends JFrame implements ActionListener {
     private int roundsPerGame;
     private int questionsPerRound;
     private boolean isPlayerOne;
+    private boolean isChoosingCategory = true;
 
     // NY listor för att hålla referenser till rutorna
     private List<JPanel> scorePanelsPlayerOne = new ArrayList<>();
@@ -112,13 +113,61 @@ public class GameUI extends JFrame implements ActionListener {
         add(lobbyPanel);
     }
 
-    public void showLobbyPanel(boolean chooseCategory) {
+    public void showLobbyPanel(boolean isChoosingCategory) {
         if (lobbyPanel == null) {
             createLobbyPanel();
         }
+
+        updateCategoryPanel(isChoosingCategory);
+
+//        JPanel categoryPanel = new JPanel(new GridLayout(4, 1));
+//
+//        if (isChoosingCategory) {
+//            JLabel chooseCategoryLabel = new JLabel("Player " + currentPlayer + ", choose a category");
+//            chooseCategoryLabel.setHorizontalAlignment(SwingConstants.CENTER);
+//            categoryPanel.add(chooseCategoryLabel);
+//
+//            for (Category category : categories) {
+//                JButton button = new JButton(category.getName());
+//                button.addActionListener(e -> {
+//                    setCurrentCategory(category);
+//                    this.isChoosingCategory = false;
+//                    showQuestionPanel(category.getQuestions().get(0));
+//                });
+//                categoryPanel.add(button);
+//            }
+//        } else {
+//            JLabel waitingLabel = new JLabel("Waiting for opponent...");
+//            waitingLabel.setHorizontalAlignment(SwingConstants.CENTER);
+//            categoryPanel.add(waitingLabel);
+//        }
+//
+//        lobbyPanel.removeAll();
+//        lobbyPanel.add(categoryPanel, BorderLayout.SOUTH);
+//
+//        Component[] categoryPanelComponents = categoryPanel.getComponents();
+//        for (Component component : categoryPanelComponents) {
+//            if (component instanceof JPanel && component != categoryPanel) {
+//                lobbyPanel.remove(component);
+//            }
+//        }
+//
+//        lobbyPanel.add(categoryPanel, BorderLayout.SOUTH);
+//
+        if (questionPanel != null) {
+            questionPanel.setVisible(false);
+        }
+        lobbyPanel.setVisible(true);
+//
+//        revalidate();
+//        repaint();
+//        setVisible(true);
+    }
+
+    public void updateCategoryPanel(boolean isChoosingCategory) {
         JPanel categoryPanel = new JPanel(new GridLayout(4, 1));
 
-        if (chooseCategory) {
+        if (isChoosingCategory) {
             JLabel chooseCategoryLabel = new JLabel("Player " + currentPlayer + ", choose a category");
             chooseCategoryLabel.setHorizontalAlignment(SwingConstants.CENTER);
             categoryPanel.add(chooseCategoryLabel);
@@ -127,6 +176,7 @@ public class GameUI extends JFrame implements ActionListener {
                 JButton button = new JButton(category.getName());
                 button.addActionListener(e -> {
                     setCurrentCategory(category);
+                    this.isChoosingCategory = false;
                     showQuestionPanel(category.getQuestions().get(0));
                 });
                 categoryPanel.add(button);
@@ -137,24 +187,36 @@ public class GameUI extends JFrame implements ActionListener {
             categoryPanel.add(waitingLabel);
         }
 
-        Component[] categoryPanelComponents = categoryPanel.getComponents();
-        for (Component component : categoryPanelComponents) {
-            if (component != categoryPanel) {
-                lobbyPanel.remove(component);
-            }
-        }
+        lobbyPanel.removeAll();
+
+        JPanel outerScorePanel = new JPanel(new GridLayout(1, 2));
+        outerScorePanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        JPanel scorePanelPlayerOne = createScorePanel(roundsPerGame, questionsPerRound, Color.GRAY, scorePanelsPlayerOne);
+        scorePanelPlayerOne.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        JPanel scorePanelPlayerTwo = createScorePanel(roundsPerGame, questionsPerRound, Color.GRAY, scorePanelsPlayerTwo);
+        scorePanelPlayerTwo.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        outerScorePanel.add(scorePanelPlayerOne);
+        outerScorePanel.add(scorePanelPlayerTwo);
+        lobbyPanel.add(outerScorePanel, BorderLayout.CENTER);
+
+        // Lägg tillbaka den övre panelen (spelarinformation)
+        JPanel northPanel = new JPanel(new GridLayout(1, 2));
+        JLabel playerOneLabel = new JLabel("Player 1");
+        playerOneLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        JLabel playerTwoLabel = new JLabel("Player 2");
+        playerTwoLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        northPanel.add(playerOneLabel);
+        northPanel.add(playerTwoLabel);
+        lobbyPanel.add(northPanel, BorderLayout.NORTH);
 
         lobbyPanel.add(categoryPanel, BorderLayout.SOUTH);
-
-        if (questionPanel != null) {
-            questionPanel.setVisible(false);
-        }
-        lobbyPanel.setVisible(true);
 
         revalidate();
         repaint();
         setVisible(true);
     }
+
+
 
     // NY skapa och spara referenser till poängtavlans rutor
     private JPanel createScorePanel(int rows, int col, Color color, List<JPanel> scorePanels) {
@@ -238,7 +300,6 @@ public class GameUI extends JFrame implements ActionListener {
 
             validateAnswer(clickedButton, selectedAnswer); //Kontrollerar svar
 
-
             // Tar en paus innan nästa fråga för att hinna se färgbyte
             Timer timer = new Timer(1000, new ActionListener() {
                 @Override
@@ -251,15 +312,15 @@ public class GameUI extends JFrame implements ActionListener {
                         // Återställ rundan och byt spelare om det är slut på frågor
                         currentRoundScore = 0;
                         currentRound = 0;
-
+                        currentPlayer = (currentPlayer == 1) ? 2 : 1; // DETTA växlar spelare
+                        isChoosingCategory = (currentPlayer == 1 && isPlayerOne) || (currentPlayer == 2 && !isPlayerOne);
                         Response response = new Response(Response.ResponseType.RESULT, currentCategory, result);
                         try {
                             out.writeObject(response);
                         } catch (IOException ex) {
                             throw new RuntimeException(ex);
                         }
-                        currentPlayer = (currentPlayer == 1) ? 2 : 1; // DETTA växlar spelare
-                        showLobbyPanel(true);
+                        showLobbyPanel(isChoosingCategory);
                     } else {
                         Question q = questions.get(currentRound);
                         showQuestionPanel(q);
