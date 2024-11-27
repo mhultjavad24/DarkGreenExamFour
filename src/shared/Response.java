@@ -1,25 +1,35 @@
+package shared;
+
 import java.io.Serializable;
 import java.util.List;
 
-public class QuizResponse implements Serializable {
+public class Response implements Serializable {
 
     public enum ResponseType {
         WELCOME,
         QUESTION,
-        RESULT
+        RESULT,
+        WAIT
     }
 
     private List<Category> categories;
+    private Category category;
     private Result result;
     private ResponseType type;
 
-    public QuizResponse(List<Category> categories, Result result) {
+    public Response(List<Category> categories, Result result) {
         this.categories = categories;
         this.result = result;
     }
 
-    public QuizResponse(ResponseType type, List<Category> categories, Result result) {
+    public Response(ResponseType type, List<Category> categories, Result result) {
         this.categories = categories;
+        this.result = result;
+        this.type = type;
+    }
+
+    public Response(ResponseType type, Category category, Result result) {
+        this.category = category;
         this.result = result;
         this.type = type;
     }
@@ -47,6 +57,11 @@ public class QuizResponse implements Serializable {
     public void setType(ResponseType type) {
         this.type = type;
     }
+
+    public Category getCategory() {
+        return category;
+    }
+
 
 
 }

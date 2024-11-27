@@ -1,4 +1,11 @@
-import java.util.ArrayList;
+package client;
+
+import shared.Category;
+import shared.Player;
+import shared.Question;
+import shared.Round;
+import server.Properties;
+
 import java.util.List;
 
 public class Game {

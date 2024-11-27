@@ -1,3 +1,5 @@
+package shared;
+
 public class Player {
     protected String name;
     protected int score;
