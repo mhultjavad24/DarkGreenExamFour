@@ -299,4 +299,12 @@ public class GameUI extends JFrame implements ActionListener {
         setCurrentCategory(category);
         showQuestionPanel(category.getQuestions().get(0));
     }
+
+    public void updateTurnStatus(String message) {
+        JLabel turnLabel = new JLabel(message);
+        turnLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        lobbyPanel.add(turnLabel, BorderLayout.NORTH);
+        revalidate();
+        repaint();
+    }
 }
