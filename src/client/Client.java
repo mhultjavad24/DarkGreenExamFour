@@ -24,7 +24,7 @@ public class Client {
         try (Socket socket = new Socket("127.0.0.1", 55556);
              ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
              ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
-            System.out.println("Connected to server.");
+            System.out.println("Connected to server."); //funkar
 
 ////             En endaste instans av GameUi
 ////            GameUI gameUI = new GameUI(List.of(category), null); //Här behöver vi mata in en del i konstruktorn

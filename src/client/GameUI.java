@@ -124,7 +124,7 @@ public class GameUI extends JFrame implements ActionListener {
             categoryPanel.add(chooseCategoryLabel);
 
             for (Category category : categories) {
-                JButton button = new JButton(category.getName());
+                JButton button = new JButton(category.getName()); //realkod
                 button.addActionListener(e -> {
                     setCurrentCategory(category);
                     showQuestionPanel(category.getQuestions().get(0));
