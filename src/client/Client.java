@@ -15,6 +15,7 @@ import java.util.Scanner;
 public class Client {
     private static String playerName;
     private static GameUI gameUI;
+    private static String identifier;
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -43,24 +44,25 @@ public class Client {
             while ((inResponse = (Response) in.readObject()) != null) {
                 // switch
                 switch (inResponse.getType()) {
-                    case WELCOME -> {
-                        System.out.println("Welcome message received at Client");
-                        gameUI = new GameUI(inResponse.getCategories(), 3, 3, null, true);
+                    case BOOTUP -> {
+                        identifier = inResponse.getIdentifier();
+                        gameUI = new GameUI(inResponse.getCategories(), inResponse.getRoundsPerGame(), inResponse.getQuestionsPerRound(), out, inResponse.getIdentifier());
                         gameUI.setOut(out);
+                    }
+                    case WELCOME -> {
                         SwingUtilities.invokeLater(() -> {
                             gameUI.showLobbyPanel(true);
                             gameUI.setVisible(true);
                         });
-
                     }
                     case WAIT -> {
-                        System.out.println("Welcome message received at Client");
-                        gameUI = new GameUI(inResponse.getCategories(), 3, 3, null, false);
-                        gameUI.setOut(out);
                         SwingUtilities.invokeLater(() -> {
                             gameUI.showLobbyPanel(false);
                             gameUI.setVisible(true);
                         });
+                    }
+                    case WAIT_ROUND -> {
+
 
                     }
                     case QUESTION -> {
@@ -70,7 +72,18 @@ public class Client {
                         System.out.println("Result message received at Client");
                         gameUI.startRound(inResponse.getCategory());
                     }
+
+                    case GAME_RESULT_WINNER -> {
+                        JOptionPane.showMessageDialog(null, "You won the game!");
+                    }
+                    case GAME_RESULT_LOSER -> {
+                        JOptionPane.showMessageDialog(null, "You lost the game!");
+                    }
+                    case GAME_RESULT_DRAW -> {
+                        JOptionPane.showMessageDialog(null, "It's a draw!");
+                    }
                 }
+
 
 //                if (inResponse instanceof Response quizResponse) {
 //                    SwingUtilities.invokeLater(() -> {

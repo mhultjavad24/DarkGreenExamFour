@@ -24,7 +24,10 @@ public class Server {
                 PlayerConnection player2 = new PlayerConnection(player2Socket, "Player 2");
                 System.out.println("Player 2 connected");
 
-                ServerGame serverGame = new ServerGame(player1, player2, 3, 3);
+
+                Properties properties = new Properties();
+                properties.loadProperties();
+                ServerGame serverGame = new ServerGame(player1, player2, properties.getRoundsPerGame(), properties.getQuestionsPerRound());
                 serverGame.start();
 
 

@@ -10,13 +10,7 @@ public class Result implements Serializable {
 
     public Result() {
         this.player1RoundScores = new ArrayList<>();
-        this.player1RoundScores.add(0);
-        this.player1RoundScores.add(0);
-        this.player1RoundScores.add(0);
         this.player2RoundScores = new ArrayList<>();
-        this.player2RoundScores.add(0);
-        this.player2RoundScores.add(0);
-        this.player2RoundScores.add(0);
     }
 
     public Result(List<Integer> player1RoundScores, List<Integer> player2RoundScores) {

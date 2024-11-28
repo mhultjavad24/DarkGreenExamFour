@@ -29,7 +29,9 @@ public class GameUI extends JFrame implements ActionListener {
     private Game game; //Används inte
     private int roundsPerGame;
     private int questionsPerRound;
-    private boolean isPlayerOne;
+    private String identifier;
+    private String opponentIdentifier;
+    private boolean selectsNextCategory = false;
 
     // NY listor för att hålla referenser till rutorna
 //    private List<JPanel> scorePanelsPlayerOne = new ArrayList<>();
@@ -42,27 +44,19 @@ public class GameUI extends JFrame implements ActionListener {
     private int scorePlayerOne = 0;
     private int scorePlayerTwo = 0;
 
-
-    public GameUI(List<Category> categories, List<Question> questions,
-                  int roundsPerGame, int questionsPerRound, ObjectOutputStream out, boolean isPlayerOne) {
-        this.categories = categories;
-        this.questions = questions;
-        this.roundsPerGame = roundsPerGame;
-        this.questionsPerRound = questionsPerRound;
-        this.out = out;
-        this.isPlayerOne = isPlayerOne;
-
-        showLobbyPanel(isPlayerOne);
-    }
-
-    public GameUI(List<Category> categories, int roundsPerGame, int questionsPerRound, ObjectOutputStream out, boolean isPlayerOne) {
+    public GameUI(List<Category> categories, int roundsPerGame, int questionsPerRound, ObjectOutputStream out, String identifier) {
         this.categories = categories;
         this.roundsPerGame = roundsPerGame;
         this.questionsPerRound = questionsPerRound;
         this.out = out;
-        this.isPlayerOne = isPlayerOne;
-
-        showLobbyPanel(isPlayerOne);
+        this.identifier = identifier;
+        this.opponentIdentifier = (identifier.equals("Player 1")) ? "Player 2" : "Player 1";
+        if (this.identifier.equals("Player 1")) {
+            this.currentPlayer = 1;
+        } else {
+            this.currentPlayer = 2;
+            this.selectsNextCategory = true;
+        }
     }
 
     public static void main(String[] args) {
@@ -82,7 +76,7 @@ public class GameUI extends JFrame implements ActionListener {
         List<Question> questions = new ArrayList<>();
         questions.add(question3);
 
-        GameUI gameUI = new GameUI(categories, questions, 3, 3, null, true);
+//        GameUI gameUI = new GameUI(categories, questions, 3, 3, null, true);
     }
 
 
@@ -97,9 +91,9 @@ public class GameUI extends JFrame implements ActionListener {
         outerScorePanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         JPanel northPanel = new JPanel(new GridLayout(1, 2));
 
-        JLabel playerOneLabel = new JLabel("Player 1");
+        JLabel playerOneLabel = new JLabel(this.identifier);
         playerOneLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        JLabel playerTwoLabel = new JLabel("Player 2");
+        JLabel playerTwoLabel = new JLabel(this.opponentIdentifier);
         playerTwoLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         scoreLabelOne = new JLabel("Score: " + scorePlayerOne);
@@ -127,13 +121,11 @@ public class GameUI extends JFrame implements ActionListener {
     }
 
     public void showLobbyPanel(boolean chooseCategory) {
-        if (lobbyPanel == null) {
-            createLobbyPanel();
-        }
+        System.out.println("Showing lobby panel" + this.identifier + " " + chooseCategory);
+        createLobbyPanel();
         JPanel categoryPanel = new JPanel(new GridLayout(4, 1));
-
         if (chooseCategory) {
-            JLabel chooseCategoryLabel = new JLabel("Player " + currentPlayer + ", choose a category");
+            JLabel chooseCategoryLabel = new JLabel("Your turn to choose a category");
             chooseCategoryLabel.setHorizontalAlignment(SwingConstants.CENTER);
             categoryPanel.add(chooseCategoryLabel);
 
@@ -252,6 +244,7 @@ public class GameUI extends JFrame implements ActionListener {
         if (isCorrect) {
             currentRoundScore++;
         }
+        System.out.println("Correct answer provided: " + isCorrect);
         clickedButton.setBackground(isCorrect ? Color.GREEN : Color.RED);
         updateScorePanel(isCorrect);
         revalidate();
@@ -270,33 +263,35 @@ public class GameUI extends JFrame implements ActionListener {
 
 
             // Tar en paus innan nästa fråga för att hinna se färgbyte
-            Timer timer = new Timer(1000, new ActionListener() {
+            // Set back to 1000 ms before submitting
+            Timer timer = new Timer(1, new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent evt) {
                     currentRound++;
                     if (currentRound >= questionsPerRound) {
 
-//                        if (currentPlayer == 1) {
-//                            scorePlayerOne += currentRoundScore;
-//                        } else if (currentPlayer == 2) {
-//                            scorePlayerTwo += currentRoundScore;
-//                        }
-
-                        List<Integer> p1Score = List.of(currentRoundScore, 0, 0);
+                        List<Integer> p1Score = List.of(0, 0, 0);
                         List<Integer> p2Score = List.of(0, 0, 0);
                         Result result = new Result(p1Score, p2Score);
-                        // Återställ rundan och byt spelare om det är slut på frågor
-                        currentRoundScore = 0;
-                        currentRound = 0;
 
-                        Response response = new Response(Response.ResponseType.RESULT, currentCategory, result);
+                        Response.ResponseType type = selectsNextCategory ? Response.ResponseType.RESULT_NO_ACTION : Response.ResponseType.RESULT;
+                        Response response = new Response(type, currentCategory, result);
+                        response.setIdentifier(identifier);
+                        response.setRoundScore(currentRoundScore);
+
+
+                        System.out.println("Sending response");
                         try {
                             out.writeObject(response);
                         } catch (IOException ex) {
                             throw new RuntimeException(ex);
                         }
-                        currentPlayer = (currentPlayer == 1) ? 2 : 1; // DETTA växlar spelare
-                        showLobbyPanel(currentRound % 2 == 0);
+
+                        // Återställ rundan och byt spelare om det är slut på frågor
+                        currentRoundScore = 0;
+                        currentRound = 0;
+
+                        decideNextView();
                     } else {
                         Question q = questions.get(currentRound);
                         showQuestionPanel(q);
@@ -306,6 +301,26 @@ public class GameUI extends JFrame implements ActionListener {
             timer.setRepeats(false);
             timer.start();
         }
+    }
+
+    public void decideNextView() {
+        if (selectsNextCategory) {
+            showLobbyPanel(true);
+            this.selectsNextCategory = false;
+            return;
+        }
+
+        currentPlayer = (currentPlayer == 1) ? 2 : 1; // DETTA växlar spelare
+        showLobbyPanel(selectsNextCategory);
+//        boolean chooseCategory = true;
+//        if (identifier.equals("Player 2") && currentPlayer == 1) {
+//            chooseCategory = false;
+//        } else if (identifier.equals("Player 1") && currentPlayer == 2) {
+//            chooseCategory = false;
+//        }
+//
+//        showLobbyPanel(chooseCategory);
+
     }
 
 
@@ -335,5 +350,6 @@ public class GameUI extends JFrame implements ActionListener {
     public void startRound(Category category) {
         setCurrentCategory(category);
         showQuestionPanel(category.getQuestions().get(0));
+        this.selectsNextCategory = true;
     }
 }
