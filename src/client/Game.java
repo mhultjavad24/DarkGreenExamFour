@@ -16,7 +16,6 @@ public class Game {
     protected Properties properties;
 
 
-
     public Game(List<Player> players, Round[] rounds, Properties properties) {
         this.players = players;
         this.rounds = new Round[properties.getRoundsPerGame()]; //skapar rundor pga antalet i prop
@@ -48,6 +47,7 @@ public class Game {
     public void selectCategory(Category category, List<Question> questions) { //tänkte list ist för array kan d va bättre/sämre?
         rounds[currentRoundIndex] = new Round(category, questions);
     }
+
     public void AnswerCurrentQuestion(String answer) {
         Round currentRound = getCurrentRound();
         Player currentPlayer = getCurrentPlayer();
@@ -56,7 +56,7 @@ public class Game {
         boolean isCorrectAnswer = currentQuestion.isCorrectAnswer(answer);
 
         int playerIndex = players.indexOf(currentPlayer);
-        currentRound.setPlayerResult(playerIndex,isCorrectAnswer);
+        currentRound.setPlayerResult(playerIndex, isCorrectAnswer);
 
         if (isCorrectAnswer) { //poäng t spelare
             currentPlayer.increaseScore();
@@ -66,6 +66,7 @@ public class Game {
             switchPlayer();
         }
     }
+
     public Player getWinner() { //metod för att hitta vinnaren ?
         Player winner = players.get(0);
         for (Player player : players) {
