@@ -11,7 +11,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 public class GameUI extends JFrame implements ActionListener {
@@ -21,8 +20,8 @@ public class GameUI extends JFrame implements ActionListener {
     private JPanel lobbyPanel;
     private JPanel questionPanel;
 
-    private JLabel scoreLabelOne;
-    private JLabel scoreLabelTwo;
+    private JLabel scoreLabelMe;
+    private JLabel scoreLabelOpponent;
 
     private Question currentQuestion;
     private ObjectOutputStream out;
@@ -41,8 +40,8 @@ public class GameUI extends JFrame implements ActionListener {
     private int currentRound = 0;
     private int currentPlayer = 1; // 1 = Player 1, 2 = Player 2
     private int currentRoundScore = 0;
-    private int scorePlayerOne = 0;
-    private int scorePlayerTwo = 0;
+    private int scorePlayerMe = 0;
+    private int scorePlayerOpponent = 0;
 
     public GameUI(List<Category> categories, int roundsPerGame, int questionsPerRound, ObjectOutputStream out, String identifier) {
         this.categories = categories;
@@ -75,10 +74,10 @@ public class GameUI extends JFrame implements ActionListener {
         JLabel playerTwoLabel = new JLabel(this.opponentIdentifier);
         playerTwoLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-        scoreLabelOne = new JLabel("Score: " + scorePlayerOne);
-        scoreLabelOne.setHorizontalAlignment(SwingConstants.CENTER);
-        scoreLabelTwo = new JLabel("Score: " + scorePlayerTwo);
-        scoreLabelTwo.setHorizontalAlignment(SwingConstants.CENTER);
+        scoreLabelMe = new JLabel("Score: " + scorePlayerMe);
+        scoreLabelMe.setHorizontalAlignment(SwingConstants.CENTER);
+        scoreLabelOpponent = new JLabel("Score: " + scorePlayerOpponent);
+        scoreLabelOpponent.setHorizontalAlignment(SwingConstants.CENTER);
 
 //        JPanel scorePanelPlayerOne = createScorePanel(roundsPerGame, questionsPerRound, Color.GRAY, scorePanelsPlayerOne);
 //        scorePanelPlayerOne.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -87,8 +86,8 @@ public class GameUI extends JFrame implements ActionListener {
 
         northPanel.add(playerOneLabel);
         northPanel.add(playerTwoLabel);
-        outerScorePanel.add(scoreLabelOne);
-        outerScorePanel.add(scoreLabelTwo);
+        outerScorePanel.add(scoreLabelMe);
+        outerScorePanel.add(scoreLabelOpponent);
 
 //        outerScorePanel.add(scorePanelPlayerOne);
 //        outerScorePanel.add(scorePanelPlayerTwo);
@@ -155,19 +154,24 @@ public class GameUI extends JFrame implements ActionListener {
 //        return panel;
 //    }
 
+    public void updateScore(int roundScore, int opponentScore) {
+        scorePlayerMe = roundScore;
+        scorePlayerOpponent = opponentScore;
+        scoreLabelMe.setText("Score: " + scorePlayerMe);
+        scoreLabelOpponent.setText("Score: " + scorePlayerOpponent);
+        revalidate();
+        repaint();
+    }
+
     // NY Metod för att uppdatera poängtavlans rutor - detta inkl både player 1 å 2
     private void updateScorePanel(boolean isCorrect) {
 
         if (isCorrect) {
-            if (currentPlayer == 1) {
-                scorePlayerOne ++;
-            } else if (currentPlayer == 2) {
-                scorePlayerTwo ++;
-            }
+            scorePlayerMe++;
         }
 
-        scoreLabelOne.setText("Score: " + scorePlayerOne);
-        scoreLabelTwo.setText("Score: " + scorePlayerTwo);
+        scoreLabelMe.setText("Score: " + scorePlayerMe);
+//        scoreLabelOpponent.setText("Score: " + scorePlayerOpponent);
 
         revalidate();
         repaint();
