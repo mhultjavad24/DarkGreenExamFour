@@ -52,6 +52,13 @@ public class Client {
                         System.out.println("Result message received at Client");
                         gameUI.startRound(inResponse.getCategory());
                     }
+                    case SCORE_UPDATE -> {
+                        if (identifier.equals("Player 1")) {
+                            gameUI.updateScore(inResponse.getTotalScorePlayer1(), inResponse.getTotalScorePlayer2());
+                        } else {
+                            gameUI.updateScore(inResponse.getTotalScorePlayer2(), inResponse.getTotalScorePlayer1());
+                        }
+                    }
 
                     case GAME_RESULT_WINNER -> {
                         JOptionPane.showMessageDialog(null, identifier + ": You won the game!");

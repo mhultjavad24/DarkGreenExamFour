@@ -37,6 +37,16 @@ public class ServerGame extends Thread {
         return currentPlayer == player1 ? player2 : player1;
     }
 
+    public void reportScore() {
+        Response scoreResponse = new Response(Response.ResponseType.SCORE_UPDATE, (List<Category>) null, null);
+        int player1Total = player1Results.stream().mapToInt(Integer::intValue).sum();
+        int player2Total = player2Results.stream().mapToInt(Integer::intValue).sum();
+        scoreResponse.setTotalScorePlayer1(player1Total);
+        scoreResponse.setTotalScorePlayer2(player2Total);
+        player1.sendResponse(scoreResponse);
+        player2.sendResponse(scoreResponse);
+    }
+
     public void checkWinState() {
         if (player1Results.size() >= roundsPerGame && player2Results.size() >= roundsPerGame) {
             int player1Total = player1Results.stream().mapToInt(Integer::intValue).sum();
@@ -100,6 +110,7 @@ public class ServerGame extends Thread {
             System.out.println("Player 1 results: " + player1Results);
             System.out.println("Player 2 results: " + player2Results);
 
+            this.reportScore();
             this.checkWinState();
 
         }

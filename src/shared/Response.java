@@ -11,6 +11,7 @@ public class Response implements Serializable {
         QUESTION,
         RESULT,
         RESULT_NO_ACTION,
+        SCORE_UPDATE,
         WAIT,
         WAIT_ROUND,
         GAME_RESULT_WINNER,
@@ -23,6 +24,8 @@ public class Response implements Serializable {
     private Result result;
     private ResponseType type;
     private String identifier;
+    private int totalScorePlayer1;
+    private int totalScorePlayer2;
     private int roundScore;
     private int roundsPerGame;
     private int questionsPerRound;
@@ -102,5 +105,21 @@ public class Response implements Serializable {
 
     public void setRoundScore(int roundScore) {
         this.roundScore = roundScore;
+    }
+
+    public int getTotalScorePlayer2() {
+        return totalScorePlayer2;
+    }
+
+    public void setTotalScorePlayer2(int totalScorePlayer2) {
+        this.totalScorePlayer2 = totalScorePlayer2;
+    }
+
+    public int getTotalScorePlayer1() {
+        return totalScorePlayer1;
+    }
+
+    public void setTotalScorePlayer1(int totalScorePlayer1) {
+        this.totalScorePlayer1 = totalScorePlayer1;
     }
 }
