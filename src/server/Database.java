@@ -11,38 +11,8 @@ import shared.Question;
 public class Database {
 
     public Database() {
-
         Properties properties = new Properties();
         properties.loadProperties();
-        Category category = new Category("General");
-        Question question = new Question("What is the capital of Sweden?", category, new String[]{"Stockholm", "London", "Berlin", "Madrid"}, 0);
-        Question[] questions = new Question[]{question};
-//        List<shared.Player> players = List.of(new shared.Player("Player 1"), new shared.Player("Player 2"));
-//        shared.Round round = new shared.Round(category, List.of(questions));
-//        Game game = new Game(players, new shared.Round[]{new shared.Round(category, List.of(questions))}, properties);
-
-        List<Category> categories2 = getCategories();
-        System.out.println(categories2.toString());
-        List<Question> allQuestions = getAllQuestions();
-        System.out.println(allQuestions.toString());
-
-        List<Question> programmingQuestions = getQuestionsByCategory("Programming");
-        System.out.println(programmingQuestions.toString());
-
-         // client.GameUI gameUI = new client.GameUI();
-
-        List<Category> categories = new ArrayList<>();
-        categories.add(new Category("Programming"));
-        categories.add(new Category("Animals and Nature"));
-        Category c1 = new Category("History");
-        categories.add(c1);
-
-        String[] answers = {"1939", "1940", "1941", "1942"};
-        Question question3 = new Question("When did second world war start?", c1, answers, 0);
-
-//        gameUI.renderCategorySelection(categories);
-//
-      //  gameUI.renderQuestion(question3);
     }
 
     public static void main(String[] args) {

@@ -59,32 +59,10 @@ public class GameUI extends JFrame implements ActionListener {
         }
     }
 
-    public static void main(String[] args) {
-        List<Category> categories = new ArrayList<>();
-        categories.add(new Category("Programming"));
-        categories.add(new Category("Animals and Nature"));
-        Category c1 = new Category("History");
-        categories.add(c1);
-
-        List<Question> historyQuestions = new ArrayList<>();
-        String[] answers = {"1939", "1940", "1941", "1942"};
-        Question question3 = new Question("When did the second world war start?", c1, answers, 0);
-
-        historyQuestions.add(question3);
-        c1.setQuestions(historyQuestions);
-
-        List<Question> questions = new ArrayList<>();
-        questions.add(question3);
-
-//        GameUI gameUI = new GameUI(categories, questions, 3, 3, null, true);
-    }
-
-
     public void createLobbyPanel() {
         setTitle("DarkGreen Quiz");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(500, 400);
-        setLocationRelativeTo(null);
 
         lobbyPanel = new JPanel(new BorderLayout());
         JPanel outerScorePanel = new JPanel(new GridLayout(1, 2));
@@ -92,6 +70,7 @@ public class GameUI extends JFrame implements ActionListener {
         JPanel northPanel = new JPanel(new GridLayout(1, 2));
 
         JLabel playerOneLabel = new JLabel(this.identifier);
+        playerOneLabel.setFont(new Font("Arial", Font.BOLD, 20));
         playerOneLabel.setHorizontalAlignment(SwingConstants.CENTER);
         JLabel playerTwoLabel = new JLabel(this.opponentIdentifier);
         playerTwoLabel.setHorizontalAlignment(SwingConstants.CENTER);
