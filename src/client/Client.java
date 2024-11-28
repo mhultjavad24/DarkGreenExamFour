@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Client {
-    private static String playerName;
     private static GameUI gameUI;
     private static String identifier;
 

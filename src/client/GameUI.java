@@ -160,9 +160,9 @@ public class GameUI extends JFrame implements ActionListener {
 
         if (isCorrect) {
             if (currentPlayer == 1) {
-                scorePlayerOne += currentRoundScore;
+                scorePlayerOne ++;
             } else if (currentPlayer == 2) {
-                scorePlayerTwo += currentRoundScore;
+                scorePlayerTwo ++;
             }
         }
 
@@ -242,8 +242,7 @@ public class GameUI extends JFrame implements ActionListener {
 
 
             // Tar en paus innan nästa fråga för att hinna se färgbyte
-            // Set back to 1000 ms before submitting
-            Timer timer = new Timer(1, new ActionListener() {
+            Timer timer = new Timer(1000, new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent evt) {
                     currentRound++;
@@ -291,15 +290,6 @@ public class GameUI extends JFrame implements ActionListener {
 
         currentPlayer = (currentPlayer == 1) ? 2 : 1; // DETTA växlar spelare
         showLobbyPanel(selectsNextCategory);
-//        boolean chooseCategory = true;
-//        if (identifier.equals("Player 2") && currentPlayer == 1) {
-//            chooseCategory = false;
-//        } else if (identifier.equals("Player 1") && currentPlayer == 2) {
-//            chooseCategory = false;
-//        }
-//
-//        showLobbyPanel(chooseCategory);
-
     }
 
 

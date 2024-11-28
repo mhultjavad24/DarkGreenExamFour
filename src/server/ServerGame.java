@@ -39,7 +39,6 @@ public class ServerGame extends Thread {
 
     public void checkWinState() {
         if (player1Results.size() >= roundsPerGame && player2Results.size() >= roundsPerGame) {
-            System.out.println("Game over");
             int player1Total = player1Results.stream().mapToInt(Integer::intValue).sum();
             int player2Total = player2Results.stream().mapToInt(Integer::intValue).sum();
             if (player1Total > player2Total) {
@@ -72,7 +71,6 @@ public class ServerGame extends Thread {
                     System.out.println("Welcome message received at ServerGame");
                 }
                 case QUESTION -> {
-//                    currentPlayer.sendQuestion();
                 }
                 case RESULT_NO_ACTION -> {
                     if (response.getIdentifier().equals("Player 1")) {
@@ -95,13 +93,6 @@ public class ServerGame extends Thread {
                     }
                     getOpponent().sendResponse(response);
                     currentPlayer = getOpponent();
-//                    if (currentRound == 0) {
-//                        player1.sendResponse(new Response(Response.ResponseType.WAIT_ROUND, (List<Category>) null, null));
-//                        player2.sendResponse(response);
-//                    }
-
-
-//                    currentPlayer.sendResult();
                 }
             }
 
@@ -112,21 +103,6 @@ public class ServerGame extends Thread {
             this.checkWinState();
 
         }
-
-
-
-//        for (int i = 0; i < roundsPerGame; i++) {
-//            player1.sendWelcome();
-//            player2.sendWelcome();
-//
-//            for (int j = 0; j < questionsPerRound; j++) {
-//                player1.sendQuestion();
-//                player2.sendQuestion();
-//
-//                player1.sendResult();
-//                player2.sendResult();
-//            }
-//        }
     }
 
     public void bootup(List<Category> categories) {
