@@ -189,9 +189,9 @@ public class GameUI extends JFrame implements ActionListener {
 
         if (isCorrect) {
             if (currentPlayer == 1) {
-                scorePlayerOne += currentRoundScore;
+                scorePlayerOne ++;
             } else if (currentPlayer == 2) {
-                scorePlayerTwo += currentRoundScore;
+                scorePlayerTwo ++;
             }
         }
 
@@ -282,8 +282,8 @@ public class GameUI extends JFrame implements ActionListener {
 //                            scorePlayerTwo += currentRoundScore;
 //                        }
 
-                        List<Integer> p1Score = List.of(currentRoundScore, 0, 0);
-                        List<Integer> p2Score = List.of(0, 0, 0);
+                        List<Integer> p1Score = List.of(scorePlayerOne, 0, 0);
+                        List<Integer> p2Score = List.of(scorePlayerTwo, 0, 0);
                         Result result = new Result(p1Score, p2Score);
                         // Återställ rundan och byt spelare om det är slut på frågor
                         currentRoundScore = 0;
