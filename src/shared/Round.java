@@ -39,9 +39,4 @@ public class Round {
     }
 }
 
-    //if sats bör de va här inne?
-
-//   // public int getPlayerScore(int playerIndex) { //osäker kring denna , need help
-
-
 

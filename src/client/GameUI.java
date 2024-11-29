@@ -25,16 +25,11 @@ public class GameUI extends JFrame implements ActionListener {
 
     private Question currentQuestion;
     private ObjectOutputStream out;
-    private Game game; //Används inte
     private int roundsPerGame;
     private int questionsPerRound;
     private String identifier;
     private String opponentIdentifier;
     private boolean selectsNextCategory = false;
-
-    // NY listor för att hålla referenser till rutorna
-//    private List<JPanel> scorePanelsPlayerOne = new ArrayList<>();
-//    private List<JPanel> scorePanelsPlayerTwo = new ArrayList<>();
 
     // Spåra aktuella rundor för poänguppdatering
     private int currentRound = 0;
@@ -79,18 +74,10 @@ public class GameUI extends JFrame implements ActionListener {
         scoreLabelOpponent = new JLabel("Score: " + scorePlayerOpponent);
         scoreLabelOpponent.setHorizontalAlignment(SwingConstants.CENTER);
 
-//        JPanel scorePanelPlayerOne = createScorePanel(roundsPerGame, questionsPerRound, Color.GRAY, scorePanelsPlayerOne);
-//        scorePanelPlayerOne.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-//        JPanel scorePanelPlayerTwo = createScorePanel(roundsPerGame, questionsPerRound, Color.GRAY, scorePanelsPlayerTwo);
-//        scorePanelPlayerTwo.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-
         northPanel.add(playerOneLabel);
         northPanel.add(playerTwoLabel);
         outerScorePanel.add(scoreLabelMe);
         outerScorePanel.add(scoreLabelOpponent);
-
-//        outerScorePanel.add(scorePanelPlayerOne);
-//        outerScorePanel.add(scorePanelPlayerTwo);
 
         lobbyPanel.add(outerScorePanel, BorderLayout.CENTER);
         lobbyPanel.add(northPanel, BorderLayout.NORTH);
@@ -140,20 +127,6 @@ public class GameUI extends JFrame implements ActionListener {
         setVisible(true);
     }
 
-    // NY skapa och spara referenser till poängtavlans rutor
-//    private JPanel createScorePanel(int rows, int col, Color color, List<JPanel> scorePanels) {
-//        JPanel panel = new JPanel(new GridLayout(rows, col, 10, 10));
-//        panel.setBackground(Color.WHITE);
-//
-//        for (int i = 0; i < rows * col; i++) {
-//            JPanel cell = new JPanel();
-//            cell.setBackground(color);
-//            scorePanels.add(cell); // Sparar referens till varje cell
-//            panel.add(cell);
-//        }
-//        return panel;
-//    }
-
     public void updateScore(int roundScore, int opponentScore) {
         scorePlayerMe = roundScore;
         scorePlayerOpponent = opponentScore;
@@ -165,24 +138,14 @@ public class GameUI extends JFrame implements ActionListener {
 
     // NY Metod för att uppdatera poängtavlans rutor - detta inkl både player 1 å 2
     private void updateScorePanel(boolean isCorrect) {
-
         if (isCorrect) {
             scorePlayerMe++;
         }
 
         scoreLabelMe.setText("Score: " + scorePlayerMe);
-//        scoreLabelOpponent.setText("Score: " + scorePlayerOpponent);
 
         revalidate();
         repaint();
-
-        //        List<JPanel> scorePanels = (player == 1) ? scorePanelsPlayerOne : scorePanelsPlayerTwo;
-//        if (round >= 0 && round < scorePanels.size()) {
-//            JPanel cell = scorePanels.get(round);
-//            cell.setBackground(isCorrect ? Color.GREEN : Color.RED);
-//        }
-
-
     }
 
     public void showQuestionPanel(Question question) {
@@ -190,7 +153,6 @@ public class GameUI extends JFrame implements ActionListener {
         setTitle("DarkGreen Quiz");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(500, 400);
-//        setLocationRelativeTo(null);
 
         if (questionPanel != null) {
             remove(questionPanel);
@@ -222,6 +184,7 @@ public class GameUI extends JFrame implements ActionListener {
         repaint();
     }
 
+    //Metod som kontrollerar svar och justerar knappfärger
     public void validateAnswer(JButton clickedButton, String selectedAnswer) {
         boolean isCorrect = currentQuestion.isCorrectAnswer(selectedAnswer);
         if (isCorrect) {
@@ -244,7 +207,6 @@ public class GameUI extends JFrame implements ActionListener {
 
             validateAnswer(clickedButton, selectedAnswer); //Kontrollerar svar
 
-
             // Tar en paus innan nästa fråga för att hinna se färgbyte
             Timer timer = new Timer(1000, new ActionListener() {
                 @Override
@@ -260,7 +222,6 @@ public class GameUI extends JFrame implements ActionListener {
                         Response response = new Response(type, currentCategory, result);
                         response.setIdentifier(identifier);
                         response.setRoundScore(currentRoundScore);
-
 
                         System.out.println("Sending response");
                         try {
@@ -299,19 +260,6 @@ public class GameUI extends JFrame implements ActionListener {
 
     public void setOut(ObjectOutputStream out) {
         this.out = out;
-    }
-
-
-    public List<Category> getCategories() {
-        return categories;
-    }
-
-    public void setCategories(List<Category> categories) {
-        this.categories = categories;
-    }
-
-    public Category getCurrentCategory() {
-        return currentCategory;
     }
 
     public void setCurrentCategory(Category currentCategory) {

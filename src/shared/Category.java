@@ -33,8 +33,4 @@ public class Category implements Serializable {
         this.questions = questions;
     }
 
-  //  @Override
-//    public String toString() {
-//        return ""; // Inget skrivs ut
-//    }
 }
